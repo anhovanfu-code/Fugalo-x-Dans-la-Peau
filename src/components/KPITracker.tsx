@@ -113,7 +113,7 @@ export default function KPITracker({ kpis, setKpis }: KPITrackerProps) {
           <div className="mt-6 p-4 bg-amber-50 border border-amber-200/60 rounded-lg flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
             <p className="text-xs text-stone-700 leading-relaxed font-sans font-semibold">
-              <strong className="text-amber-855 font-bold">Chú ý:</strong> Sức khỏe liên kết hiện đang dưới ngưỡng an toàn (80%). Vui lòng hỗ trợ Dans la Peau cải thiện thời gian giao hàng (Lead time) hoặc gia tăng tỷ lệ bán hàng chéo tại showroom của mình để nâng cao chỉ số liên kết thương mại.
+              <strong className="text-amber-800 font-bold">Chú ý:</strong> Sức khỏe liên kết hiện đang dưới ngưỡng an toàn (80%). Vui lòng hỗ trợ Dans la Peau cải thiện thời gian giao hàng (Lead time) hoặc gia tăng tỷ lệ bán hàng chéo tại showroom của mình để nâng cao chỉ số liên kết thương mại.
             </p>
           </div>
         )}
@@ -135,7 +135,7 @@ export default function KPITracker({ kpis, setKpis }: KPITrackerProps) {
                     {getKPIIcon(item.id)}
                   </div>
                   <div>
-                    <h4 className="text-sm font-extrabold text-stone-905 text-stone-850">{item.vietnameseMetric}</h4>
+                    <h4 className="text-sm font-extrabold text-stone-900">{item.vietnameseMetric}</h4>
                     <span className="text-[10px] font-mono text-stone-400 font-bold tracking-tight block">{item.metric}</span>
                   </div>
                 </div>
@@ -143,7 +143,7 @@ export default function KPITracker({ kpis, setKpis }: KPITrackerProps) {
               </div>
 
               {/* Descriptions */}
-              <p className="text-xs text-stone-605 text-stone-600 mt-3 leading-relaxed font-sans font-medium min-h-[40px]">
+              <p className="text-xs text-stone-600 mt-3 leading-relaxed font-sans font-medium min-h-[40px]">
                 {item.vietnameseDescription}
               </p>
 

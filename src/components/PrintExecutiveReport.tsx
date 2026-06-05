@@ -237,7 +237,7 @@ export default function PrintExecutiveReport({
           </div>
 
           <div className="space-y-1">
-            <h2 className="text-base font-serif font-bold text-stone-905 text-stone-900 flex items-center gap-2">
+            <h2 className="text-base font-serif font-bold text-stone-900 flex items-center gap-2">
               <Printer className="w-4 h-4 text-amber-600" />
               Cấu hình Bản in PDF
             </h2>
@@ -446,7 +446,7 @@ export default function PrintExecutiveReport({
 
               {/* Bottom Metadata & Signature Area */}
               <div className="border-t border-stone-200 pt-6 relative z-10 font-sans">
-                <div className="grid grid-cols-2 gap-4 text-xs text-stone-550 leading-relaxed">
+                <div className="grid grid-cols-2 gap-4 text-xs text-stone-500 leading-relaxed">
                   <div>
                     <span className="font-bold uppercase tracking-wider text-[10px] text-stone-500 block mb-1">Cơ quan thực hiện</span>
                     <strong className="text-stone-800">Fugalo Co., Ltd. M&A Division</strong><br />
@@ -497,7 +497,7 @@ export default function PrintExecutiveReport({
                       <span className="w-2 h-2 rounded-full bg-emerald-500" />
                       S - Điển Mạnh (Strengths)
                     </h3>
-                    <ul className="list-disc pl-4 space-y-1 text-stone-650 leading-relaxed">
+                    <ul className="list-disc pl-4 space-y-1 text-stone-600 leading-relaxed">
                       <li>Tay nghề thủ công khâu tay saddle stitch độc bản tinh xảo từ Dans la Peau.</li>
                       <li>Vùng cung ứng và xử lý da chất lượng cao từ các dòng da Hermès danh giá.</li>
                       <li>Khả năng cá nhân hóa (Bespoke) đẳng cấp tối ưu cho các sản phẩm nhỏ lẻ.</li>
@@ -510,7 +510,7 @@ export default function PrintExecutiveReport({
                       <span className="w-2 h-2 rounded-full bg-orange-500" />
                       W - Điểm Yếu (Weaknesses)
                     </h3>
-                    <ul className="list-disc pl-4 space-y-1 text-stone-650 leading-relaxed">
+                    <ul className="list-disc pl-4 space-y-1 text-stone-600 leading-relaxed">
                       <li>Hồ sơ tài chính chưa kiểm toán độc lập, còn tồn dư công nợ cá nhân chưa giải phóng.</li>
                       <li>Sản lượng chế tác đơn chiếc hạn chế, khó đảm bảo tiến độ sỉ quy mô lớn.</li>
                       <li>Khả năng tiếp cận thị trường và quản trị kỹ thuật số còn thô sơ.</li>
@@ -523,7 +523,7 @@ export default function PrintExecutiveReport({
                       <span className="w-2 h-2 rounded-full bg-blue-500" />
                       O - Cơ Hội (Opportunities)
                     </h3>
-                    <ul className="list-disc pl-4 space-y-1 text-stone-650 leading-relaxed">
+                    <ul className="list-disc pl-4 space-y-1 text-stone-600 leading-relaxed">
                       <li>Nhúng thẳng dịch vụ phụ trợ da hạt tại chuỗi Showroom VIP của Fugalo (Dĩ An, Bình Dương).</li>
                       <li>Gói dịch vụ Spa Refresh tái tạo hàng hiệu, thu hút tệp khách hàng mua túi hiệu cũ.</li>
                       <li>Ra mắt dòng Capsule bền vững "Crafted for Second Life" thân thiện môi trường.</li>
@@ -536,7 +536,7 @@ export default function PrintExecutiveReport({
                       <span className="w-2 h-2 rounded-full bg-rose-500" />
                       T - Thách Thức (Threats)
                     </h3>
-                    <ul className="list-disc pl-4 space-y-1 text-stone-650 leading-relaxed">
+                    <ul className="list-disc pl-4 space-y-1 text-stone-600 leading-relaxed">
                       <li>Tranh chấp bảo hộ nhãn hiệu toàn cầu với Louis Vuitton Malletier (tên "Dans la Peau" trùng dòng nước hoa LV).</li>
                       <li>Giới hạn pháp nhân nếu xảy ra sự vụ tịch thu nhãn hiệu ở Mỹ hoặc EU.</li>
                       <li>Dễ bị bắt chước bởi các xưởng đồ da thủ công giá rẻ trong nước.</li>
@@ -623,7 +623,7 @@ export default function PrintExecutiveReport({
                 <div className="overflow-x-auto">
                   <table className="w-full text-[11px] text-left border-collapse border border-stone-200">
                     <thead>
-                      <tr className="bg-stone-100 text-stone-750 border-b border-stone-200">
+                      <tr className="bg-stone-100 text-stone-700 border-b border-stone-200">
                         <th className="p-2 border-r border-stone-200 font-semibold w-12 text-center">STT</th>
                         <th className="p-2 border-r border-stone-200 font-semibold w-24">Phân loại</th>
                         <th className="p-2 border-r border-stone-200 font-semibold">Chỉ tiêu thẩm định</th>
@@ -653,7 +653,7 @@ export default function PrintExecutiveReport({
                               {item.category}
                             </td>
                             <td className="p-2 border-r border-stone-200">
-                              <span className="font-medium text-stone-850">{item.vietnameseQuestion}</span>
+                              <span className="font-medium text-stone-800">{item.vietnameseQuestion}</span>
                               <p className="text-[10px] text-stone-500 italic leading-snug mt-0.5">{item.details}</p>
                             </td>
                             <td className="p-2 border-r border-stone-200 text-center uppercase text-[9px] font-bold font-mono">
@@ -715,7 +715,7 @@ export default function PrintExecutiveReport({
 
                 {/* Simulation Inputs Table */}
                 <div className="space-y-2">
-                  <h3 className="text-xs font-bold text-stone-850 uppercase tracking-wider block font-mono">
+                  <h3 className="text-xs font-bold text-stone-800 uppercase tracking-wider block font-mono">
                     1. Các thông số giả định thương thảo
                   </h3>
                   <div className="grid grid-cols-4 gap-3 text-center">
@@ -740,7 +740,7 @@ export default function PrintExecutiveReport({
 
                 {/* Financial Output Table */}
                 <div className="space-y-3 font-sans mt-4">
-                  <h3 className="text-xs font-bold text-stone-850 uppercase tracking-wider block font-mono">
+                  <h3 className="text-xs font-bold text-stone-800 uppercase tracking-wider block font-mono">
                     2. Bảng hạch toán phân chia lợi nhuận ròng
                   </h3>
                   <div className="border border-stone-200 rounded overflow-hidden">
@@ -787,7 +787,7 @@ export default function PrintExecutiveReport({
 
                 {/* KPI Benchmarks */}
                 <div className="space-y-2 mt-4">
-                  <h3 className="text-xs font-bold text-stone-850 uppercase tracking-wider block font-mono">
+                  <h3 className="text-xs font-bold text-stone-800 uppercase tracking-wider block font-mono">
                     3. Chỉ tiêu kiểm soát chất phẩm (Cam kết KPI)
                   </h3>
                   <div className="grid grid-cols-2 gap-2 text-xs">
@@ -860,7 +860,7 @@ export default function PrintExecutiveReport({
                           <span className="font-semibold block text-[10px] text-stone-400 font-mono uppercase">Hành động then chốt</span>
                           <ul className="space-y-0.5 text-stone-700 list-disc pl-3">
                             {phase.tasks.map(task => (
-                              <li key={task.id} className={task.completed ? "list-none flex items-center gap-1 font-medium text-stone-850" : ""}>
+                              <li key={task.id} className={task.completed ? "list-none flex items-center gap-1 font-medium text-stone-800" : ""}>
                                 {task.completed && <Check className="w-2.5 h-2.5 text-emerald-600 flex-shrink-0" />}
                                 <span className={task.completed ? "text-stone-900" : ""}>{task.text}</span>
                               </li>
@@ -872,7 +872,7 @@ export default function PrintExecutiveReport({
                   ))}
                 </div>
 
-                <div className="p-3 bg-stone-50 border border-stone-200 rounded-lg text-[10px] text-stone-550 leading-relaxed">
+                <div className="p-3 bg-stone-50 border border-stone-200 rounded-lg text-[10px] text-stone-500 leading-relaxed">
                   <strong>Cam kết tiến độ:</strong> Đúng ngày 90, Ban Thẩm định Fugalo sẽ phối hợp cùng các nhà đồng sáng lập để công bố báo cáo vận hành. Nếu lượng tiêu thụ đạt trên 85% chỉ tiêu bán chéo, hai bên sẽ xúc tiến sáp nhập tài chính ở giai đoạn cuối cùng.
                 </div>
               </div>
@@ -917,21 +917,21 @@ export default function PrintExecutiveReport({
 
                   <div className="space-y-2 pl-2 border-l border-stone-300">
                     <div>
-                      <strong className="text-stone-905 block">ĐIỀU 1: ĐỊNH VỤ ĐỒNG SÁNG LẬP NHÁNH MỚI</strong>
+                      <strong className="text-stone-900 block">ĐIỀU 1: ĐỊNH VỤ ĐỒNG SÁNG LẬP NHÁNH MỚI</strong>
                       <p className="text-stone-600">
                         Hai bên độc lập pháp lý trong giai đoạn đầu và phối hợp khai sinh nhánh: <strong>"Fugalo x Dans la Peau - Luxury Circular Care & Bespoke"</strong>. Nhánh này sẽ tập trung khai thác bảo hành, phục hồi các túi hiệu Hermès/Chanel và bán phụ tùng đồ chơi đồng hồ da độc bản.
                       </p>
                     </div>
 
                     <div>
-                      <strong className="text-stone-905 block">ĐIỀU 2: ĐẦU TƯ THỰC ĐỊA & PILOT CHUẨN MỰC</strong>
+                      <strong className="text-stone-900 block">ĐIỀU 2: ĐẦU TƯ THỰC ĐỊA & PILOT CHUẨN MỰC</strong>
                       <p className="text-stone-600">
                         Kỳ hạn Thử nghiệm 90 ngày. Fugalo cung ứng gian hàng trung tâm tại Dĩ An. Dans la Peau cung ứng 4 phân nhóm sản phẩm thiết thực và số tay thợ lành nghề để biểu diễn thủ công tại Showroom nhằm thúc đẩy quảng cáo diện rộng.
                       </p>
                     </div>
 
                     <div>
-                      <strong className="text-stone-905 block">ĐIỀU 3: CHIA SẺ DOANH SỐ VÀ LỢI NHUẬN</strong>
+                      <strong className="text-stone-900 block">ĐIỀU 3: CHIA SẺ DOANH SỐ VÀ LỢI NHUẬN</strong>
                       <p className="text-stone-600">
                         Áp dụng cơ cấu lợi nhuận {activeModel === "wholesale" ? "mua sỉ sòng phẳng chiết khấu " + discountPercent + "%" : activeModel === "revshare" ? "ăn chia hoa hồng " + discountPercent + "% trên đầu sản phẩm" : "mô phỏng " + discountPercent + "% phân chia sau khi trừ chi phí COGS tích lũy"}.
                       </p>
@@ -946,14 +946,14 @@ export default function PrintExecutiveReport({
                 {/* Signature zone */}
                 <div className="mt-10 pt-6 border-t border-stone-300 flex justify-between text-xs text-stone-600 font-sans">
                   <div>
-                    <span className="font-bold text-stone-805 uppercase block">ĐẠI DIỆN DANS LA PEAU</span>
+                    <span className="font-bold text-stone-800 uppercase block">ĐẠI DIỆN DANS LA PEAU</span>
                     <span className="text-[10px] text-stone-400 block mt-1">Chuẩn bị hồ sơ thụ kiểm</span>
                     <div className="h-12" />
                     <span className="italic text-stone-500">Chưa ký (Chờ duyệt M&A)</span>
                   </div>
                   
                   <div className="text-right">
-                    <span className="font-bold text-stone-805 uppercase block">BOD FUGALO CO., LTD</span>
+                    <span className="font-bold text-stone-800 uppercase block">BOD FUGALO CO., LTD</span>
                     <span className="text-[10px] text-stone-400 block mt-1">Xác thức quy trình</span>
                     <div className="h-12" />
                     <strong className="italic text-stone-900 font-serif font-bold">{signeeName}</strong>

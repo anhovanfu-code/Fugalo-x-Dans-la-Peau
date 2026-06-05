@@ -103,7 +103,7 @@ export default function TimelineSection({ timeline, setTimeline }: TimelineSecti
             className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-lg cursor-pointer transition-all border ${
               subTab === "phases"
                 ? "bg-amber-600 text-white border-amber-600 shadow-sm"
-                : "bg-stone-50 text-stone-650 border-stone-200 hover:bg-stone-100 hover:text-stone-900"
+                : "bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100 hover:text-stone-900"
             }`}
           >
             <Compass className="w-4 h-4" />
@@ -114,7 +114,7 @@ export default function TimelineSection({ timeline, setTimeline }: TimelineSecti
             className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-lg cursor-pointer transition-all border ${
               subTab === "weeks"
                 ? "bg-amber-600 text-white border-amber-600 shadow-sm"
-                : "bg-stone-50 text-stone-650 border-stone-200 hover:bg-stone-100 hover:text-stone-900"
+                : "bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100 hover:text-stone-900"
             }`}
           >
             <ClipboardList className="w-4 h-4" />
@@ -175,7 +175,7 @@ export default function TimelineSection({ timeline, setTimeline }: TimelineSecti
                         <span className="text-[10px] font-mono text-amber-600 uppercase tracking-wider font-extrabold">Giai đoạn {phase.phaseNumber}</span>
                         {getStatusBadge(phase.status)}
                       </div>
-                      <h4 className="text-xs font-extrabold text-stone-850">{phase.title}</h4>
+                      <h4 className="text-xs font-extrabold text-stone-800">{phase.title}</h4>
                       <div className="flex items-center gap-1.5 text-[10px] text-stone-500 mt-1 font-medium">
                         <Calendar className="w-3.5 h-3.5 text-stone-400" />
                         <span>{phase.duration}</span>
@@ -210,15 +210,15 @@ export default function TimelineSection({ timeline, setTimeline }: TimelineSecti
 
               {/* Objective */}
               <div className="space-y-1.5 font-sans">
-                <span className="text-xs font-mono text-stone-550 uppercase tracking-wider block font-bold">MỤC TIÊU CỐT LÕI:</span>
+                <span className="text-xs font-mono text-stone-500 uppercase tracking-wider block font-bold">MỤC TIÊU CỐT LÕI:</span>
                 <p className="text-xs text-stone-700 leading-relaxed bg-amber-50/[0.05] border border-amber-200 p-3 rounded-lg border-l-2 border-l-amber-600 font-medium">
                   {focusedPhase.objective}
                 </p>
               </div>
 
               {/* Adjustable Calendar / Duration Simulator */}
-              <div className="space-y-2 bg-stone-50 p-4 rounded-lg border border-stone-205 font-sans">
-                <span className="text-xs font-mono text-stone-550 uppercase tracking-wider block font-bold">MỐC THỜI GIAN DỰ KIẾN (CHỈNH SỬA):</span>
+              <div className="space-y-2 bg-stone-50 p-4 rounded-lg border border-stone-200 font-sans">
+                <span className="text-xs font-mono text-stone-500 uppercase tracking-wider block font-bold">MỐC THỜI GIAN DỰ KIẾN (CHỈNH SỬA):</span>
                 <div className="flex items-center gap-3">
                   <Calendar className="w-4 h-4 text-amber-600 shrink-0" />
                   <input 
@@ -234,7 +234,7 @@ export default function TimelineSection({ timeline, setTimeline }: TimelineSecti
 
               {/* Tasks checklist list */}
               <div className="space-y-3 font-sans">
-                <span className="text-xs font-mono text-stone-550 uppercase tracking-wider block font-bold">DANH SÁCH BƯỚC CẦN HOÀN THÀNH:</span>
+                <span className="text-xs font-mono text-stone-500 uppercase tracking-wider block font-bold">DANH SÁCH BƯỚC CẦN HOÀN THÀNH:</span>
                 <div className="space-y-2">
                   {focusedPhase.tasks.map((task) => (
                     <div 
@@ -243,7 +243,7 @@ export default function TimelineSection({ timeline, setTimeline }: TimelineSecti
                       className={`flex items-start gap-3 p-3.5 rounded-lg border transition-all duration-150 cursor-pointer ${
                         task.completed 
                           ? "bg-emerald-50/50 border-emerald-200 text-emerald-950" 
-                          : "bg-stone-50/50 border-stone-200 text-stone-650 hover:border-stone-300 hover:bg-stone-50"
+                          : "bg-stone-50/50 border-stone-200 text-stone-600 hover:border-stone-300 hover:bg-stone-50"
                       }`}
                       id={`task-item-${task.id}`}
                     >
@@ -254,7 +254,7 @@ export default function TimelineSection({ timeline, setTimeline }: TimelineSecti
                           <Circle className="w-4 h-4 text-stone-400" />
                         )}
                       </div>
-                      <span className={`text-xs leading-relaxed font-medium ${task.completed ? "line-through text-stone-450 italic" : "text-stone-800"}`}>
+                      <span className={`text-xs leading-relaxed font-medium ${task.completed ? "line-through text-stone-400 italic" : "text-stone-800"}`}>
                         {task.text}
                       </span>
                     </div>
@@ -351,14 +351,14 @@ export default function TimelineSection({ timeline, setTimeline }: TimelineSecti
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                       {/* Left: Core Actions */}
                       <div className="space-y-1">
-                        <span className="text-[10px] font-mono text-stone-550 uppercase tracking-wider font-extrabold block">TÂM ĐIỂM HÀNH ĐỘNG HÀNG NGÀY:</span>
+                        <span className="text-[10px] font-mono text-stone-500 uppercase tracking-wider font-extrabold block">TÂM ĐIỂM HÀNH ĐỘNG HÀNG NGÀY:</span>
                         <p className="text-stone-800 leading-relaxed font-semibold">{wm.focus}</p>
                       </div>
 
                       {/* Right: Deliverables */}
                       <div className="space-y-1">
-                        <span className="text-[10px] font-mono text-stone-550 uppercase tracking-wider font-extrabold block">SẢN PHẨM PHẢI BAN HÀNH (DELIVERABLE):</span>
-                        <div className="bg-stone-50 border border-stone-200 p-3 rounded text-stone-750 leading-relaxed font-semibold font-sans">
+                        <span className="text-[10px] font-mono text-stone-500 uppercase tracking-wider font-extrabold block">SẢN PHẨM PHẢI BAN HÀNH (DELIVERABLE):</span>
+                        <div className="bg-stone-50 border border-stone-200 p-3 rounded text-stone-700 leading-relaxed font-semibold font-sans">
                           {wm.output}
                         </div>
                       </div>
@@ -368,7 +368,7 @@ export default function TimelineSection({ timeline, setTimeline }: TimelineSecti
                     <div className="pt-3 border-t border-stone-100/50 flex items-start gap-2.5 text-xs text-rose-800 bg-rose-50/20 px-3 py-2.5 rounded border border-rose-100">
                       <ShieldAlert className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
                       <div className="space-y-0.5">
-                        <strong className="font-bold text-[10px] tracking-wider uppercase font-mono block text-rose-805">RÀO CẢN DỪNG ĐÀM PHÁN (GATE STOP CONDITION):</strong>
+                        <strong className="font-bold text-[10px] tracking-wider uppercase font-mono block text-rose-800">RÀO CẢN DỪNG ĐÀM PHÁN (GATE STOP CONDITION):</strong>
                         <span className="leading-relaxed font-sans font-medium">{wm.stopCondition}</span>
                       </div>
                     </div>

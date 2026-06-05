@@ -78,7 +78,7 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
       case "high":
         return "bg-rose-50 text-rose-800 border border-rose-200/80";
       case "medium":
-        return "bg-amber-50 text-amber-805 border border-amber-205/80";
+        return "bg-amber-50 text-amber-805 border border-amber-200/80";
       default:
         return "bg-stone-100 text-stone-600 border border-stone-200";
     }
@@ -119,7 +119,7 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
           <div className="space-y-1">
             <span className="text-xs font-mono text-amber-600 uppercase tracking-widest font-bold">Thẩm định thực tế (Due Diligence)</span>
             <h3 className="text-xl font-serif font-bold text-stone-900">Danh Mục Soát Xét & Đội Ngũ Thẩm Định</h3>
-            <p className="text-xs text-stone-550 font-sans max-w-xl font-medium">
+            <p className="text-xs text-stone-500 font-sans max-w-xl font-medium">
               Fugalo tuyệt đối không góp vốn hay nhận danh nghĩa đồng sáng lập khi chưa hoàn thành 100% việc kiểm nghiệm hồ sơ năng lực này.
             </p>
           </div>
@@ -133,18 +133,18 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
         </div>
 
         {/* Real-time score display */}
-        <div className="mt-6 p-4 bg-stone-50 border border-stone-200/80 rounded-lg space-y-3 shadow-inner">
+        <div className="mt-6 p-4 bg-stone-50 border border-stone-200 rounded-lg space-y-3 shadow-inner">
           <div className="flex justify-between items-center text-xs">
             <span className="text-stone-700 font-bold font-sans tracking-wide">TIẾN ĐỘ THẨM ĐỊNH THÀNH CÔNG (CLEARANCE RATE)</span>
-            <span className="font-mono text-amber-605 font-extrabold text-lg">{clearanceScore}%</span>
+            <span className="font-mono text-amber-600 font-extrabold text-lg">{clearanceScore}%</span>
           </div>
-          <div className="w-full bg-stone-205 h-2.5 rounded-full overflow-hidden">
+          <div className="w-full bg-stone-200 h-2.5 rounded-full overflow-hidden">
             <div 
-              className="h-full bg-gradient-to-r from-amber-600 via-amber-450 to-emerald-500 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-amber-600 via-amber-400 to-emerald-500 transition-all duration-500"
               style={{ width: `${clearanceScore}%` }}
             />
           </div>
-          <div className="flex flex-wrap gap-4 text-[10px] text-stone-550 pt-1 font-mono font-medium">
+          <div className="flex flex-wrap gap-4 text-[10px] text-stone-500 pt-1 font-mono font-medium">
             <div className="flex items-center gap-1">
               <span className="w-2 h-2 rounded bg-stone-400" />
               <span>Pending = 0đ</span>
@@ -163,10 +163,10 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
 
       {/* 2. SPECIFIC WARNING STRIP FOR TRADEMARK RISKS */}
       <div className="bg-rose-50 border border-rose-200 rounded-xl p-5 flex items-start gap-4">
-        <XOctagon className="w-5 h-5 text-rose-605 shrink-0 mt-0.5" />
+        <XOctagon className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
         <div className="space-y-2 text-xs">
           <h4 className="font-bold text-rose-800 uppercase tracking-wider">CẢNH BÁO QUAN TRỌNG VỀ SỞ HỮU TRÍ TUỆ (IP)</h4>
-          <p className="text-stone-750 leading-relaxed font-sans font-medium">
+          <p className="text-stone-700 leading-relaxed font-sans font-medium">
             Tên thương hiệu <strong className="text-stone-900 font-extrabold">“DANS LA PEAU”</strong> đã được đăng ký và sở hữu bởi đại gia xa xỉ <strong className="text-stone-900 font-extrabold">Louis Vuitton Malletier</strong> tại thị trường Mỹ & WIPO (trong danh mục fragrance, cosmetics). Dẫu khác biệt địa lý và ngành hàng cốt lõi (da thủ công VN vs mỹ phẩm cao cấp Pháp) có thể giúp tránh được xử phạt hiện hữu, song nếu Fugalo có bất kỳ tham vọng mở rộng quốc tế hay làm thương mại phái sinh, đây là rủi ro pháp lý nghẽn lớn cần được luật sư thẩm định kỹ lưỡng.
           </p>
         </div>
@@ -233,7 +233,7 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
                   className={`px-3 py-1.5 rounded text-xs transition-all duration-200 cursor-pointer border ${
                     activeCategoryFilter === f.id 
                       ? "bg-amber-600 text-white font-bold border-amber-600 shadow-sm" 
-                      : "bg-stone-50 text-stone-650 border-stone-200 hover:bg-stone-50 hover:text-stone-900"
+                      : "bg-stone-50 text-stone-500 border-stone-200 hover:bg-stone-50 hover:text-stone-900"
                   }`}
                 >
                   {f.label}
@@ -258,7 +258,7 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-3 border-b border-stone-100">
                     <div className="space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="flex items-center gap-1 bg-stone-50 px-2 py-0.5 rounded text-[10px] text-stone-650 font-mono border border-stone-200">
+                        <span className="flex items-center gap-1 bg-stone-50 px-2 py-0.5 rounded text-[10px] text-stone-500 font-mono border border-stone-200">
                           {getCategoryIcon(item.category)}
                           <span>{getCategoryVietnameseLabel(item.category)}</span>
                         </span>
@@ -299,7 +299,7 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
                         className={`px-2.5 py-1 text-xs rounded border cursor-pointer transition-all ${
                           item.status === "pending"
                             ? "bg-stone-100 text-stone-700 border-stone-300 font-bold"
-                            : "bg-stone-50 text-stone-400 border-stone-150 hover:bg-stone-100"
+                            : "bg-stone-50 text-stone-400 border-stone-200 hover:bg-stone-100"
                         }`}
                       >
                         Chưa rõ
@@ -309,7 +309,7 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
 
                   {/* Question details description */}
                   <div className="mt-3 text-xs text-stone-700 leading-relaxed bg-stone-50 p-3 rounded border border-stone-200/80 font-sans font-medium">
-                    <span className="font-bold text-amber-755 block mb-0.5">Trọng tâm thẩm tra:</span>
+                    <span className="font-bold text-amber-700 block mb-0.5">Trọng tâm thẩm tra:</span>
                     {item.details}
                   </div>
 
@@ -375,7 +375,7 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
           
           {/* Left panel: Directory listing */}
           <div className="lg:col-span-4 space-y-2">
-            <span className="text-xs font-mono text-stone-550 uppercase tracking-wider block font-bold">Thư mục Tài liệu gốc (Data Room index)</span>
+            <span className="text-xs font-mono text-stone-500 uppercase tracking-wider block font-bold">Thư mục Tài liệu gốc (Data Room index)</span>
             <div className="space-y-2">
               {DATA_ROOM_FOLDERS.map(folder => {
                 const isSelected = folder.id === selectedFolderId;
@@ -385,14 +385,14 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
                     onClick={() => setSelectedFolderId(folder.id)}
                     className={`p-3 rounded-lg border transition-all cursor-pointer flex items-center justify-between ${
                       isSelected
-                        ? "bg-amber-505/[0.04] border-amber-600 shadow-sm"
+                        ? "bg-amber-500/[0.04] border-amber-600 shadow-sm"
                         : "bg-white border-stone-200 hover:bg-stone-50"
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
                       <FolderOpen className={`w-4 h-4 shrink-0 ${isSelected ? "text-amber-600" : "text-stone-400"}`} />
                       <div className="text-xs">
-                        <h4 className="font-extrabold text-stone-850 leading-tight">{folder.vietnameseName}</h4>
+                        <h4 className="font-extrabold text-stone-800 leading-tight">{folder.vietnameseName}</h4>
                         <span className="text-[9px] font-mono text-stone-400 uppercase tracking-widest">{folder.name}</span>
                       </div>
                     </div>
@@ -418,7 +418,7 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
 
               {/* Required Documents check list */}
               <div className="space-y-3">
-                <span className="text-[10px] font-mono text-stone-550 uppercase tracking-wider block font-bold">Danh sách Hồ sơ yêu cầu cung cấp:</span>
+                <span className="text-[10px] font-mono text-stone-500 uppercase tracking-wider block font-bold">Danh sách Hồ sơ yêu cầu cung cấp:</span>
                 <div className="space-y-2.5">
                   {selectedFolder.requiredDocuments.map((doc, dIdx) => {
                     const isChecked = checkedDocuments.includes(doc);
@@ -439,7 +439,7 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
                             {isChecked && <Check className="w-3 h-3 stroke-[3px]" />}
                           </div>
                         </div>
-                        <span className={`text-xs font-semibold ${isChecked ? "line-through text-stone-450 italic" : ""}`}>
+                        <span className={`text-xs font-semibold ${isChecked ? "line-through text-stone-400 italic" : ""}`}>
                           {doc}
                         </span>
                       </div>
@@ -465,7 +465,7 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
                   <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
                   <span>Dấu hiệu đỏ cảnh báo nguy cơ (Red flags):</span>
                 </div>
-                <p className="text-xs text-stone-750 leading-relaxed font-semibold">
+                <p className="text-xs text-stone-700 leading-relaxed font-semibold">
                   {focusedFolderRedFlags(selectedFolder.id)}
                 </p>
               </div>
@@ -476,7 +476,7 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
       ) : (
         /* ADVISORS NETWORK VIEW */
         <div className="space-y-6 animate-fade-in font-sans">
-          <div className="bg-amber-50/10 border border-amber-150 rounded-xl p-5 flex items-start gap-3.5">
+          <div className="bg-amber-50/10 border border-amber-200 rounded-xl p-5 flex items-start gap-3.5">
             <Info className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
             <div className="text-xs leading-relaxed font-medium text-stone-700">
               <strong className="text-xs font-serif font-bold text-stone-900 block mb-0.5">Khuyến nghị Thuê Ngoài cho Thẩm Định Doanh Nghiệp</strong>
@@ -506,8 +506,8 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
                   </h4>
                 </div>
 
-                <div className="bg-stone-50/50 p-3 rounded-lg border border-stone-200/80 text-xs text-stone-700 font-medium leading-relaxed">
-                  <strong className="text-[10px] font-mono text-stone-450 block uppercase mb-1 font-bold">Nội dung hành động kỹ trị:</strong>
+                <div className="bg-stone-50/50 p-3 rounded-lg border border-stone-200 text-xs text-stone-700 font-medium leading-relaxed">
+                  <strong className="text-[10px] font-mono text-stone-400 block uppercase mb-1 font-bold">Nội dung hành động kỹ trị:</strong>
                   {advisor.scope}
                 </div>
               </div>

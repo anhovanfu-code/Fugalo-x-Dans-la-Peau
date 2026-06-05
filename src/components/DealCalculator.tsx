@@ -313,11 +313,11 @@ export default function DealCalculator({
               {/* Combined top KPIs */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-3.5 bg-stone-50 rounded-lg border border-stone-200 shadow-inner">
-                  <span className="text-[10px] text-stone-550 uppercase font-mono font-bold block">Doanh Thu Tổng Thụ</span>
-                  <span className="text-base sm:text-lg font-extrabold text-amber-705 text-amber-700">{formatVND(totalRevenue)}</span>
+                  <span className="text-[10px] text-stone-500 uppercase font-mono font-bold block">Doanh Thu Tổng Thụ</span>
+                  <span className="text-base sm:text-lg font-extrabold text-amber-700">{formatVND(totalRevenue)}</span>
                 </div>
                 <div className="p-3.5 bg-stone-50 rounded-lg border border-stone-200 shadow-inner">
-                  <span className="text-[10px] text-stone-550 uppercase font-mono font-bold block">Tổng Chi Phí (COGS + Marketing)</span>
+                  <span className="text-[10px] text-stone-500 uppercase font-mono font-bold block">Tổng Chi Phí (COGS + Marketing)</span>
                   <span className="text-base sm:text-lg font-extrabold text-stone-700">{formatVND(totalCogs + marketingCost)}</span>
                 </div>
               </div>
@@ -371,7 +371,7 @@ export default function DealCalculator({
                       {formatVND(fugaloNet)}
                     </span>
                   </div>
-                  <ul className="text-[11px] text-stone-605 space-y-1.5 mt-3 font-sans font-semibold border-t border-stone-150 pt-3">
+                  <ul className="text-[11px] text-stone-600 space-y-1.5 mt-3 font-sans font-semibold border-t border-stone-200 pt-3">
                     <li className="flex justify-between">
                       <span>Doanh thu nhận:</span>
                       <span className="font-mono text-stone-800 font-bold">{formatVND(activeModel === "capsule" ? (totalRevenue - (totalCogs+marketingCost))*0.5 : fugaloRevenue)}</span>
@@ -391,7 +391,7 @@ export default function DealCalculator({
                       {formatVND(dlpNet)}
                     </span>
                   </div>
-                  <ul className="text-[11px] text-stone-605 space-y-1.5 mt-3 font-sans font-semibold border-t border-stone-150 pt-3">
+                  <ul className="text-[11px] text-stone-600 space-y-1.5 mt-3 font-sans font-semibold border-t border-stone-200 pt-3">
                     <li className="flex justify-between">
                       <span>Bù đắp giá vốn:</span>
                       <span className="font-mono text-stone-800 font-bold">{formatVND(totalCogs)}</span>
@@ -406,7 +406,7 @@ export default function DealCalculator({
             </div>
 
             {/* Strategic review note */}
-            <div className="bg-amber-50/45 p-4 border border-amber-205/50 rounded-lg mt-6 text-xs text-stone-700 font-sans flex items-start gap-2.5 shadow-sm">
+            <div className="bg-amber-50/45 p-4 border border-amber-200 rounded-lg mt-6 text-xs text-stone-700 font-sans flex items-start gap-2.5 shadow-sm">
               <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
               <div>
                 <strong className="text-amber-800 block uppercase text-[10px] tracking-wider mb-0.5 font-bold">Khảo sát đàm phán tối ưu:</strong>

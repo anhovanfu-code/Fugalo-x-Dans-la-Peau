@@ -96,7 +96,7 @@ Trân trọng gửi đến đối tác Dans la Peau bản đề án chuẩn mự
             </button>
             <button
               onClick={handlePrint}
-              className="flex items-center gap-1.5 px-3 py-2 bg-stone-50 hover:bg-stone-100 text-stone-750 border border-stone-200 rounded-lg text-xs cursor-pointer select-none transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 bg-stone-50 hover:bg-stone-100 text-stone-700 border border-stone-200 rounded-lg text-xs cursor-pointer select-none transition-colors"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>In bản đề án</span>
@@ -128,7 +128,7 @@ Trân trọng gửi đến đối tác Dans la Peau bản đề án chuẩn mự
       </div>
 
       {/* RENDERED PRINT EMBED */}
-      <div className="bg-[#FAF8F5] border-2 border-stone-200 rounded-xl p-8 sm:p-12 text-stone-850 font-serif relative shadow-xl max-w-3xl mx-auto overflow-hidden">
+      <div className="bg-[#FAF8F5] border-2 border-stone-200 rounded-xl p-8 sm:p-12 text-stone-800 font-serif relative shadow-xl max-w-3xl mx-auto overflow-hidden">
         {/* Visual watermark of premium luxury quality */}
         <div className="absolute inset-0 border border-stone-300 m-4 pointer-events-none" />
         <div className="absolute top-8 right-8 border border-stone-300/40 opacity-5 w-44 h-44 rounded-full flex items-center justify-center font-bold tracking-widest text-8xl font-serif">
