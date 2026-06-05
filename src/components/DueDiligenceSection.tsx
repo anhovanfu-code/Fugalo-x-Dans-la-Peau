@@ -9,7 +9,7 @@ import { ADVISORY_TEAM, DATA_ROOM_FOLDERS } from "../data";
 import { 
   FileText, Shield, HelpCircle, Landmark, CheckSquare, 
   AlertTriangle, Filter, MessageSquare, AlertCircle, RefreshCw, XOctagon,
-  FolderOpen, Briefcase, Coins, ShieldCheck, Info, ChevronRight, Check
+  FolderOpen, Briefcase, Coins, ShieldCheck, Info, ChevronRight, Check, ShieldAlert
 } from "lucide-react";
 
 interface DueDiligenceSectionProps {
@@ -161,14 +161,103 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
         </div>
       </div>
 
-      {/* 2. SPECIFIC WARNING STRIP FOR TRADEMARK RISKS */}
-      <div className="bg-rose-50 border border-rose-200 rounded-xl p-5 flex items-start gap-4">
-        <XOctagon className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
-        <div className="space-y-2 text-xs">
-          <h4 className="font-bold text-rose-800 uppercase tracking-wider">CẢNH BÁO QUAN TRỌNG VỀ SỞ HỮU TRÍ TUỆ (IP)</h4>
-          <p className="text-stone-700 leading-relaxed font-sans font-medium">
-            Tên thương hiệu <strong className="text-stone-900 font-extrabold">“DANS LA PEAU”</strong> đã được đăng ký và sở hữu bởi đại gia xa xỉ <strong className="text-stone-900 font-extrabold">Louis Vuitton Malletier</strong> tại thị trường Mỹ & WIPO (trong danh mục fragrance, cosmetics). Dẫu khác biệt địa lý và ngành hàng cốt lõi (da thủ công VN vs mỹ phẩm cao cấp Pháp) có thể giúp tránh được xử phạt hiện hữu, song nếu Fugalo có bất kỳ tham vọng mở rộng quốc tế hay làm thương mại phái sinh, đây là rủi ro pháp lý nghẽn lớn cần được luật sư thẩm định kỹ lưỡng.
-          </p>
+      {/* 2. CRITICAL LEGAL RED FLAGS QUICK PANEL */}
+      <div className="bg-white border-2 border-rose-200 rounded-xl p-6 shadow-sm relative overflow-hidden" id="legal-redflags-quickpanel">
+        <div className="absolute top-0 right-0 w-48 h-48 bg-rose-500/[0.01] rounded-full blur-2xl pointer-events-none" />
+        
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-rose-100 pb-4 mb-5">
+          <div className="space-y-1.5 text-center md:text-left">
+            <span className="text-[10px] bg-rose-100 text-rose-800 font-mono font-extrabold px-2.5 py-1 rounded uppercase tracking-wider inline-flex items-center gap-1.5 animate-pulse">
+              <ShieldAlert className="w-3.5 h-3.5" />
+              <span>Khung Điểm Đỏ Pháp Lý Khố (Critical Legal Red Flags)</span>
+            </span>
+            <h3 className="text-base font-serif font-bold text-stone-900 mt-1">
+              Điểm Đỏ Cần Rà Soát Trước Khi Ký Kết Biên Bản Ghi Nhớ (MOU)
+            </h3>
+            <p className="text-xs text-stone-500 font-semibold font-sans">
+              Danh sách 5 rủi ro cốt lõi có thể phá vỡ thương vụ. Lãnh đạo đề xuất đàm phán giải phóng nghĩa vụ hoặc lập cơ chế phòng vệ trước khi chuyển tiền.
+            </p>
+          </div>
+          <span className="text-xs font-mono text-rose-700 bg-rose-50 border border-rose-200 px-3 py-1 rounded font-bold uppercase shadow-sm">
+            Bắt buộc Thẩm tra (Sử dụng ngoài)
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {/* Flag 1 */}
+          <div className="p-4 bg-rose-50/40 border border-rose-200/60 rounded-xl flex flex-col justify-between hover:shadow-sm transition-all duration-200">
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-mono font-bold text-rose-700 uppercase tracking-widest block font-extrabold">RỦI RO IP 01</span>
+              <h4 className="text-xs font-extrabold text-stone-900 leading-snug">Xung đột Nhãn hiệu Quốc tế (WIPO)</h4>
+              <p className="text-[11px] text-stone-605 font-medium leading-relaxed">
+                Tên <span className="font-bold">“Dans la Peau”</span> đã bị tập đoàn LVMH đăng ký bảo hộ trước cho nhóm fragrance và mỹ phẩm toàn cầu.
+              </p>
+            </div>
+            <div className="mt-3 pt-3 border-t border-rose-100 text-[10px] text-rose-800 font-semibold flex items-center gap-1.5">
+              <XOctagon className="w-3.5 h-3.5" />
+              <span>Nguy cơ kẹt thương hiệu ngoại</span>
+            </div>
+          </div>
+
+          {/* Flag 2 */}
+          <div className="p-4 bg-rose-50/40 border border-rose-200/60 rounded-xl flex flex-col justify-between hover:shadow-sm transition-all duration-200">
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-mono font-bold text-rose-700 uppercase tracking-widest block font-extrabold">RỦI RO ASSET 02</span>
+              <h4 className="text-xs font-extrabold text-stone-900 leading-snug">Quyền Sở Hữu Domain & Social</h4>
+              <p className="text-[11px] text-stone-605 font-medium leading-relaxed">
+                Tài khoản fanpage và domain <span className="font-bold">danslapeau.com</span> hiện do một cá nhân đứng tên, chưa chuyển nhượng chính thức về pháp nhân.
+              </p>
+            </div>
+            <div className="mt-3 pt-3 border-t border-rose-100 text-[10px] text-rose-800 font-semibold flex items-center gap-1.5">
+              <XOctagon className="w-3.5 h-3.5" />
+              <span>Rủi ro bảo hộ tài sản ảo</span>
+            </div>
+          </div>
+
+          {/* Flag 3 */}
+          <div className="p-4 bg-rose-50/40 border border-rose-200/60 rounded-xl flex flex-col justify-between hover:shadow-sm transition-all duration-200">
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-mono font-bold text-rose-700 uppercase tracking-widest block font-extrabold">RỦI RO CONTRACT 03</span>
+              <h4 className="text-xs font-extrabold text-stone-900 leading-snug">Hạn thuê Showroom Thảo Điền</h4>
+              <p className="text-[11px] text-stone-605 font-medium leading-relaxed">
+                Showroom Thảo Điền chủ lực chỉ còn dưới 6 tháng hạn thuê, chưa có cam kết văn bản gia hạn giữ giá từ chủ đất.
+              </p>
+            </div>
+            <div className="mt-3 pt-3 border-t border-rose-100 text-[10px] text-rose-800 font-semibold flex items-center gap-1.5">
+              <XOctagon className="w-3.5 h-3.5" />
+              <span>Rủi ro gãy điểm phân phối</span>
+            </div>
+          </div>
+
+          {/* Flag 4 */}
+          <div className="p-4 bg-rose-50/40 border border-rose-200/60 rounded-xl flex flex-col justify-between hover:shadow-sm transition-all duration-200">
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-mono font-bold text-rose-700 uppercase tracking-widest block font-extrabold">RỦI RO LAW 04</span>
+              <h4 className="text-xs font-extrabold text-stone-900 leading-snug">Pháp Lý Upcycling Vải Bạt Cũ</h4>
+              <p className="text-[11px] text-stone-605 font-medium leading-relaxed">
+                Chế tác cắt ghép vải bạt (Monogram) từ túi cũ Hermès, LV rách để làm phụ kiện có nguy cơ phạm luật kiểu dáng công nghiệp quốc tế tại VN.
+              </p>
+            </div>
+            <div className="mt-3 pt-3 border-t border-rose-100 text-[10px] text-rose-800 font-semibold flex items-center gap-1.5">
+              <XOctagon className="w-3.5 h-3.5" />
+              <span>Nguy cơ kiện tụng bản quyền</span>
+            </div>
+          </div>
+
+          {/* Flag 5 */}
+          <div className="p-4 bg-rose-50/40 border border-rose-200/60 rounded-xl flex flex-col justify-between hover:shadow-sm transition-all duration-200">
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-mono font-bold text-rose-700 uppercase tracking-widest block font-extrabold">RỦI RO TAX 05</span>
+              <h4 className="text-xs font-extrabold text-stone-900 leading-snug">Thuế và Công Nợ Tồn Đọng</h4>
+              <p className="text-[11px] text-stone-605 font-medium leading-relaxed">
+                Sổ sách P&L báo cáo biên lợi nhuận gộp danh nghĩa cao nhưng sao kê ngân hàng cho thấy dòng tiền âm, nợ đọng nhà cung cấp thô chưa khóa kỹ.
+              </p>
+            </div>
+            <div className="mt-3 pt-3 border-t border-rose-100 text-[10px] text-rose-800 font-semibold flex items-center gap-1.5">
+              <XOctagon className="w-3.5 h-3.5" />
+              <span>Tránh gánh nợ liên đới ẩn</span>
+            </div>
+          </div>
         </div>
       </div>
 

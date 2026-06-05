@@ -66,7 +66,18 @@ export default function App() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-12">
         {/* Dynamic section injection */}
-        {activeTab === "overview" && <OverviewSection />}
+        {activeTab === "overview" && (
+          <OverviewSection 
+            dealParams={{
+              activeModel,
+              volume,
+              retailPrice,
+              cogsPercent,
+              discountPercent,
+              marketingCost
+            }}
+          />
+        )}
         
         {activeTab === "synergy" && <StrategyFitSection />}
         

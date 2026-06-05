@@ -3,9 +3,29 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from "react";
+import React, { useState } from "react";
 import { KPITargetItem } from "../types";
-import { Activity, Percent, Clock, ThumbsUp, Briefcase, Heart, AlertCircle } from "lucide-react";
+import { Activity, Percent, Clock, ThumbsUp, Briefcase, Heart, AlertCircle, TrendingUp, Sparkles, LineChart as ChartIcon, Info } from "lucide-react";
+import { 
+  ResponsiveContainer, 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend 
+} from "recharts";
+
+const KPI_90DAY_FORECAST_DATA = [
+  { day: "Mở đầu", "Tốc độ Bán Chéo (%)": 3, "Biên Lợi Nhuận Gộp (%)": 32, "Giao Hàng Đúng Hạn (%)": 72, "Tỉ Lệ Lỗi (A/B %)": 6.8 },
+  { day: "Ngày 15", "Tốc độ Bán Chéo (%)": 4.5, "Biên Lợi Nhuận Gộp (%)": 36, "Giao Hàng Đúng Hạn (%)": 76, "Tỉ Lệ Lỗi (A/B %)": 5.4 },
+  { day: "Ngày 30", "Tốc độ Bán Chéo (%)": 7, "Biên Lợi Nhuận Gộp (%)": 40, "Giao Hàng Đúng Hạn (%)": 82, "Tỉ Lệ Lỗi (A/B %)": 4.2 },
+  { day: "Ngày 45", "Tốc độ Bán Chéo (%)": 9.5, "Biên Lợi Nhuận Gộp (%)": 44, "Giao Hàng Đúng Hạn (%)": 87, "Tỉ Lệ Lỗi (A/B %)": 3.1 },
+  { day: "Ngày 60", "Tốc độ Bán Chéo (%)": 11.5, "Biên Lợi Nhuận Gộp (%)": 48, "Giao Hàng Đúng Hạn (%)": 91, "Tỉ Lệ Lỗi (A/B %)": 2.2 },
+  { day: "Ngày 75", "Tốc độ Bán Chéo (%)": 13, "Biên Lợi Nhuận Gộp (%)": 52, "Giao Hàng Đúng Hạn (%)": 94, "Tỉ Lệ Lỗi (A/B %)": 1.6 },
+  { day: "Ngày 90 (Mục tiêu)", "Tốc độ Bán Chéo (%)": 15, "Biên Lợi Nhuận Gộp (%)": 55, "Giao Hàng Đúng Hạn (%)": 96, "Tỉ Lệ Lỗi (A/B %)": 1.0 }
+];
 
 interface KPITrackerProps {
   kpis: KPITargetItem[];
@@ -119,7 +139,99 @@ export default function KPITracker({ kpis, setKpis }: KPITrackerProps) {
         )}
       </div>
 
-      {/* 2. SPECIFIC INTERACTIVE KPI CARD GRID */}
+      {/* 2. RECHARTS 90-DAY KPI GROWTH FORECAST GRAPH */}
+      <div className="bg-white border border-stone-200 rounded-xl p-6 shadow-sm space-y-4" id="kpi-recharts-chart-panel">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-stone-100 pb-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-amber-600 text-xs font-mono uppercase tracking-widest font-extrabold">
+              <ChartIcon className="w-4 h-4 text-amber-600" />
+              <span>DỰ BÁO TIẾN TRÌNH KHẢO SÁT CHẠY THỬ 90 NGÀY (TREND FORECAST)</span>
+            </div>
+            <h3 className="text-base font-serif font-bold text-stone-900 leading-snug">
+              Lộ trình Tăng trưởng Chỉ số KPI trong Giai đoạn Pilot
+            </h3>
+            <p className="text-xs text-stone-500 font-semibold font-sans">
+              Thể hiện trực quan biểu đồ xu hướng bứt phá của 4 chỉ số chính qua từng chặng 15 ngày, từ lúc khởi động cho đến khi đóng cổng đánh giá.
+            </p>
+          </div>
+          <span className="text-[10px] bg-stone-50 text-stone-500 border border-stone-200 px-2.5 py-1 rounded font-bold uppercase tracking-wider font-mono shadow-inner">
+            Dữ liệu mô phỏng tuyến tính (Linear Model)
+          </span>
+        </div>
+
+        {/* RECHARTS COMPONENT */}
+        <div className="h-80 w-full pt-2">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={KPI_90DAY_FORECAST_DATA}
+              margin={{ top: 10, right: 20, left: -20, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0efe9" />
+              <XAxis 
+                dataKey="day" 
+                tick={{ fill: '#78716c', fontSize: 10, fontWeight: 500 }}
+                axisLine={{ stroke: '#e7e5e4' }}
+              />
+              <YAxis 
+                tick={{ fill: '#78716c', fontSize: 10, fontWeight: 500 }}
+                axisLine={{ stroke: '#e7e5e4' }}
+              />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#ffffff', 
+                  border: '1px solid #e7e5e4', 
+                  borderRadius: '8px', 
+                  fontSize: '11px',
+                  fontFamily: 'Inter, sans-serif',
+                  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)'
+                }} 
+              />
+              <Legend 
+                verticalAlign="bottom" 
+                height={36} 
+                iconType="circle"
+                wrapperStyle={{ fontSize: '11px', fontWeight: 550, color: '#444' }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="Tốc độ Bán Chéo (%)" 
+                stroke="#d97706" 
+                strokeWidth={3} 
+                activeDot={{ r: 6 }} 
+              />
+              <Line 
+                type="monotone" 
+                dataKey="Biên Lợi Nhuận Gộp (%)" 
+                stroke="#10b981" 
+                strokeWidth={2.5} 
+              />
+              <Line 
+                type="monotone" 
+                dataKey="Giao Hàng Đúng Hạn (%)" 
+                stroke="#0284c7" 
+                strokeWidth={2} 
+              />
+              <Line 
+                type="monotone" 
+                dataKey="Tỉ Lệ Lỗi (A/B %)" 
+                stroke="#e11d48" 
+                strokeWidth={1.5} 
+                strokeDasharray="4 4"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="p-3.5 bg-stone-50 border border-stone-200 rounded-lg text-[11px] text-stone-605 font-sans leading-relaxed flex items-start gap-2.5">
+          <Info className="w-4 h-4 text-stone-400 shrink-0 mt-0.5" />
+          <p className="font-semibold">
+            <strong className="text-stone-800 font-bold uppercase text-[10px] tracking-wider block mb-0.5">Ý nghĩa chiến lược:</strong>
+            Độ dốc của các đường thể hiện sự đồng pha bứt phá. Khi <span className="font-bold text-amber-700">Tốc độ bán chéo (Vàng đồng)</span> tăng lên mốc 15% và <span className="font-bold text-emerald-700">Biên lợi nhuận gộp (Xanh lục)</span> duy trì vững chắc từ 55%, cùng lúc kiểm soát <span className="font-bold text-rose-600">vết lỗi chỉ dưới 1% (Đường đứt đỏ)</span>, ban điều hành sẽ chính thức giải ngân nguồn vốn góp thành lập liên kết cổ đông bền chặt.
+          </p>
+        </div>
+      </div>
+
+      {/* 3. SPECIFIC INTERACTIVE KPI CARD GRID */}
       <div className="space-y-4">
         <span className="text-xs font-mono text-stone-500 uppercase tracking-widest block font-bold">Bản tinh chỉnh KPI mô phỏng</span>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

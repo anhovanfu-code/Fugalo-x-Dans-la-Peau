@@ -49,6 +49,9 @@ export default function PrintExecutiveReport({
   const [includeChecklist, setIncludeChecklist] = useState(true);
   const [includeCalculator, setIncludeCalculator] = useState(true);
   const [includeTimeline, setIncludeTimeline] = useState(true);
+  const [includeStaffing, setIncludeStaffing] = useState(true);
+  const [includeBudgetAndRaci, setIncludeBudgetAndRaci] = useState(true);
+  const [includePlaybook, setIncludePlaybook] = useState(true);
   const [includeMOU, setIncludeMOU] = useState(true);
 
   const [copied, setCopied] = useState(false);
@@ -145,10 +148,55 @@ export default function PrintExecutiveReport({
       md += `- Lợi nhuận ròng dự kiến Dans la Peau: ${formatVND(dlpNet)}\n\n`;
     }
 
+    if (includeTimeline) {
+      md += `## 4. LỘ TRÌNH VẬN HÀNH PILOT 90 NGÀY\n`;
+      md += `- Giai đoạn 1 (Ngày 1-30): Thẩm định Due Diligence bổ sung xưởng & Chốt sườn dải giá.\n`;
+      md += `- Giai đoạn 2 (Ngày 31-60): Thiết kế rập, PP Sample & Chế tác mẫu thử thủ công Capsule.\n`;
+      md += `- Giai đoạn 3 (Ngày 61-90): Sản xuất loạt thử nghiệm, Activation tệp khách hàng VIP & Go-Live.\n\n`;
+    }
+
+    if (includeStaffing) {
+      md += `## 5. CƠ CẤU TỔ CHỨC & STAFFING PLAN\n`;
+      md += `- Bộ khung nhân sự 13 chuyên viên đặc cách (Dedicated Squad) cho liên minh thực tế.\n`;
+      md += `- Program Director và Finance Controller kiểm soát cost, QA Manager đốc thúc sản lượng.\n\n`;
+    }
+
+    if (includeBudgetAndRaci) {
+      md += `## 6. DỰ TOÁN NGÂN SÁCH PILOT & MA TRẬN RACI\n`;
+      md += `- Dự trù kinh phí 90 ngày: 1,95 tỷ - 4,68 tỷ VND tùy theo kịch bản rủi ro.\n`;
+      md += `- Phân định minh bạch ma trận RACI giữa ban điều hành và xưởng thợ cả.\n\n`;
+    }
+
+    if (includePlaybook) {
+      md += `## 7. BATTLE PLAYBOOK 13 TUẦN VÀ CHỈ TIÊU KIP GATES\n`;
+      md += `- Thiết mốc 3 Gates chốt chặn quan trọng tại các ngày 30, 60 và 90 đánh giá tiến trình.\n`;
+      md += `- Ràng buộc chỉ tiêu QA dưới 2.5% loại bỏ lỗi, blended margin đạt &gt;= 55%.\n\n`;
+    }
+
+    if (includeMOU) {
+      md += `## 8. BẢN GHI NHỚ GHI NHẬN HỢP TÁC LIÊN DOANH (MOU)\n`;
+      md += `- Ghi nhận cơ cấu đóng góp, quyền điều phối thương hiệu và phân chia lợi tức sau thuế.\n\n`;
+    }
+
     navigator.clipboard.writeText(md);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
+
+  // Dynamic page numbering sequence computed based on current user filter configuration
+  let seqIdx = 0;
+  const pageNums = {
+    cover: includeCover ? ++seqIdx : 0,
+    swot: includeSWOT ? ++seqIdx : 0,
+    checklist: includeChecklist ? ++seqIdx : 0,
+    calculator: includeCalculator ? ++seqIdx : 0,
+    timeline: includeTimeline ? ++seqIdx : 0,
+    staffing: includeStaffing ? ++seqIdx : 0,
+    budget: includeBudgetAndRaci ? ++seqIdx : 0,
+    playbook: includePlaybook ? ++seqIdx : 0,
+    mou: includeMOU ? ++seqIdx : 0,
+  };
+  const totalReportPages = seqIdx || 1;
 
   return (
     <div className="fixed inset-0 bg-stone-150 bg-stone-100 z-50 flex flex-col md:flex-row font-sans text-stone-800 overflow-hidden no-print" id="print-report-workspace">
@@ -342,7 +390,37 @@ export default function PrintExecutiveReport({
                   onChange={(e) => setIncludeTimeline(e.target.checked)}
                   className="rounded border-stone-300 bg-white text-amber-600 focus:ring-0 focus:ring-offset-0"
                 />
-                <span>Lộ trình chi tiết 90 ngày</span>
+                <span>Lịch trình Giai đoạn (90 ngày)</span>
+              </label>
+
+              <label className="flex items-center gap-2 text-stone-705 text-stone-700 cursor-pointer select-none font-semibold">
+                <input 
+                  type="checkbox" 
+                  checked={includeStaffing}
+                  onChange={(e) => setIncludeStaffing(e.target.checked)}
+                  className="rounded border-stone-300 bg-white text-amber-600 focus:ring-0 focus:ring-offset-0"
+                />
+                <span>Cơ cấu & Staffing Plan (Nhân sự)</span>
+              </label>
+
+              <label className="flex items-center gap-2 text-stone-705 text-stone-700 cursor-pointer select-none font-semibold">
+                <input 
+                  type="checkbox" 
+                  checked={includeBudgetAndRaci}
+                  onChange={(e) => setIncludeBudgetAndRaci(e.target.checked)}
+                  className="rounded border-stone-300 bg-white text-amber-600 focus:ring-0 focus:ring-offset-0"
+                />
+                <span>Ngân sách Pilot & Ma trận RACI</span>
+              </label>
+
+              <label className="flex items-center gap-2 text-stone-705 text-stone-700 cursor-pointer select-none font-semibold">
+                <input 
+                  type="checkbox" 
+                  checked={includePlaybook}
+                  onChange={(e) => setIncludePlaybook(e.target.checked)}
+                  className="rounded border-stone-300 bg-white text-amber-600 focus:ring-0 focus:ring-offset-0"
+                />
+                <span>Playbook 13 Tuần thực chiến</span>
               </label>
 
               <label className="flex items-center gap-2 text-stone-705 text-stone-700 cursor-pointer select-none font-semibold">
@@ -465,7 +543,7 @@ export default function PrintExecutiveReport({
               {/* Standard Page Footer */}
               <div className="print-page-footer hidden">
                 <span>Tài liệu mật phục vụ khảo sát nội bộ sáp nhập - Fugalo Co., Ltd © 2026</span>
-                <span>Trang 1 / 6</span>
+                <span>Trang {pageNums.cover} / {totalReportPages}</span>
               </div>
             </div>
           )}
@@ -577,7 +655,7 @@ export default function PrintExecutiveReport({
               {/* Standard Page Footer */}
               <div className="print-page-footer hidden">
                 <span>Tài liệu mật phục vụ khảo sát nội bộ sáp nhập - Fugalo Co., Ltd © 2026</span>
-                <span>Trang 2 / 6</span>
+                <span>Trang {pageNums.swot} / {totalReportPages}</span>
               </div>
             </div>
           )}
@@ -681,7 +759,7 @@ export default function PrintExecutiveReport({
               {/* Standard Page Footer */}
               <div className="print-page-footer hidden">
                 <span>Tài liệu mật phục vụ khảo sát nội bộ sáp nhập - Fugalo Co., Ltd © 2026</span>
-                <span>Trang 3 / 6</span>
+                <span>Trang {pageNums.checklist} / {totalReportPages}</span>
               </div>
             </div>
           )}
@@ -809,7 +887,7 @@ export default function PrintExecutiveReport({
               {/* Standard Page Footer */}
               <div className="print-page-footer hidden">
                 <span>Tài liệu mật phục vụ khảo sát nội bộ sáp nhập - Fugalo Co., Ltd © 2026</span>
-                <span>Trang 4 / 6</span>
+                <span>Trang {pageNums.calculator} / {totalReportPages}</span>
               </div>
             </div>
           )}
@@ -880,7 +958,412 @@ export default function PrintExecutiveReport({
               {/* Standard Page Footer */}
               <div className="print-page-footer hidden">
                 <span>Tài liệu mật phục vụ khảo sát nội bộ sáp nhập - Fugalo Co., Ltd © 2026</span>
-                <span>Trang 5 / 6</span>
+                <span>Trang {pageNums.timeline} / {totalReportPages}</span>
+              </div>
+            </div>
+          )}
+
+          {/* PAGE 5B: SPECIALIZED STAFFING & HEADCOUNT PLAN */}
+          {includeStaffing && (
+            <div className="print-a4-page bg-white text-stone-900 border border-stone-300 w-[210mm] min-h-[297mm] mx-auto p-[20mm] font-serif flex flex-col justify-between relative shadow-2xl">
+              <div className="print-page-header hidden">
+                <span>FUGALO CO., LTD — STRATEGIC M&A CENTER</span>
+                <span>PHẦN V: CƠ CẤU TỔ CHỨC & BỘ KHUNG NHÂN SỰ</span>
+              </div>
+
+              <div className="space-y-5 relative z-10 flex-1 font-sans">
+                <div className="border-b border-stone-200 pb-3 font-serif">
+                  <span className="text-[10px] font-sans font-mono uppercase tracking-widest text-amber-600 block">Phần V</span>
+                  <h2 className="text-lg font-bold text-stone-900">Cơ Cấu Tổ Chức & Staffing Plan Dự Án</h2>
+                  <p className="text-xs text-stone-500 font-sans mt-0.5">
+                    Thiết lập đội ngũ chuyên trách (Dedicated Squad) cho giai đoạn Pilot và chiến lược nhân sự mở rộng.
+                  </p>
+                </div>
+
+                {/* Grid Summary */}
+                <div className="grid grid-cols-3 gap-3 text-center bg-stone-50 p-2.5 rounded border border-stone-200">
+                  <div>
+                    <span className="text-[8px] text-stone-500 uppercase block font-mono font-bold">Nhân sự dedicated (Pilot)</span>
+                    <strong className="text-xs text-stone-900 block mt-0.5">11 - 14 chuyên viên (FTE)</strong>
+                  </div>
+                  <div className="border-x border-stone-200">
+                    <span className="text-[8px] text-stone-500 uppercase block font-mono font-bold">Giai đoạn Launch Capsule</span>
+                    <strong className="text-xs text-stone-900 block mt-0.5">17 - 24 nhân lực</strong>
+                  </div>
+                  <div>
+                    <span className="text-[8px] text-stone-500 uppercase block font-mono font-bold">Mở rộng Liên doanh (JV)</span>
+                    <strong className="text-xs text-stone-900 block mt-0.5">26 - 35 nhân sự tối đa</strong>
+                  </div>
+                </div>
+
+                {/* Headcount Detail Table */}
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold text-stone-800 uppercase tracking-wider block font-mono">
+                    1. Bản dự thảo định biên vai trò chủ chốt & lương tháng (Salary & Role Benchmarking)
+                  </span>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-[9px] text-left border-collapse border border-stone-200">
+                      <thead>
+                        <tr className="bg-stone-50 text-stone-700 border-b border-stone-200 text-[9.5px] font-semibold">
+                          <th className="p-1.5 border-r border-stone-200">Chức danh / Bộ phận</th>
+                          <th className="p-1.5 border-r border-stone-200 text-center">Cấp bậc</th>
+                          <th className="p-1.5 border-r border-stone-200">Trách nhiệm cốt lõi</th>
+                          <th className="p-1.5 border-r border-stone-200">KPI tiêu biểu</th>
+                          <th className="p-1.5 text-right w-36">Lương Gross (VND & USD)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b border-stone-200">
+                          <td className="p-1.5 border-r border-stone-200 font-bold text-stone-950">Program Director</td>
+                          <td className="p-1.5 border-r border-stone-200 text-center">Director</td>
+                          <td className="p-1.5 border-r border-stone-200 text-stone-600 leading-relaxed">Điều hành toàn bộ pilot; chốt gate; giữ quan hệ; chịu P&L pilot.</td>
+                          <td className="p-1.5 border-r border-stone-200 text-stone-600 font-medium">% Milestone; GM Pilot; DD pack</td>
+                          <td className="p-1.5 text-right font-mono text-amber-700 font-bold bg-amber-500/5">70M - 120M <span className="text-[7.5px] text-amber-600 font-sans">(~$2.7k-$4.6k)</span></td>
+                        </tr>
+                        <tr className="border-b border-stone-200 bg-stone-50/30">
+                          <td className="p-1.5 border-r border-stone-200 font-bold text-stone-900">Project PMO Manager</td>
+                          <td className="p-1.5 border-r border-stone-200 text-center">Manager</td>
+                          <td className="p-1.5 border-r border-stone-200 text-stone-600 leading-relaxed">Master plan; RAID log; điều phối liên phòng; quản lý issue.</td>
+                          <td className="p-1.5 border-r border-stone-200 text-stone-600">Milestone OTIF; Issue rate</td>
+                          <td className="p-1.5 text-right font-mono text-stone-850">35M - 55M <span className="text-[7.5px] text-stone-500 font-sans">(~$1.3k-$2.1k)</span></td>
+                        </tr>
+                        <tr className="border-b border-stone-200">
+                          <td className="p-1.5 border-r border-stone-200 font-bold text-stone-900">Merchandising & Product Lead</td>
+                          <td className="p-1.5 border-r border-stone-200 text-center">Manager</td>
+                          <td className="p-1.5 border-r border-stone-200 text-stone-600 leading-relaxed">SKU strategy; price ladder; capsule design brief; samples budget.</td>
+                          <td className="p-1.5 border-r border-stone-200 text-stone-600">SKU Margin; Sample approve</td>
+                          <td className="p-1.5 text-right font-mono text-stone-850">35M - 60M <span className="text-[7.5px] text-stone-500 font-sans">(~$1.3k-$2.3k)</span></td>
+                        </tr>
+                        <tr className="border-b border-stone-200 bg-stone-50/30">
+                          <td className="p-1.5 border-r border-stone-200 font-bold text-stone-900">Production & QA Manager</td>
+                          <td className="p-1.5 border-r border-stone-200 text-center">Manager</td>
+                          <td className="p-1.5 border-r border-stone-200 text-stone-600 leading-relaxed">SOP QC xưởng thủ công; xưởng audit; warranty feedback loop.</td>
+                          <td className="p-1.5 border-r border-stone-200 text-stone-600 text-stone-600">Defect rate; Rework %; FPY</td>
+                          <td className="p-1.5 text-right font-mono text-stone-850">30M - 55M <span className="text-[7.5px] text-stone-500 font-sans">(~$1.1k-$2.1k)</span></td>
+                        </tr>
+                        <tr className="border-b border-stone-200">
+                          <td className="p-1.5 border-r border-stone-200 font-bold text-stone-900">E-commerce & Web Manager</td>
+                          <td className="p-1.5 border-r border-stone-200 text-center">Manager</td>
+                          <td className="p-1.5 border-r border-stone-200 text-stone-600 leading-relaxed">Hạ tầng Haravan; online channel ops; UTM tracking; site merch.</td>
+                          <td className="p-1.5 border-r border-stone-200 text-stone-600">Looker CVR; online Revenue</td>
+                          <td className="p-1.5 text-right font-mono text-stone-850">25M - 40M <span className="text-[7.5px] text-stone-500 font-sans">(~$1.0k-$1.5k)</span></td>
+                        </tr>
+                        <tr className="border-b border-stone-200 bg-stone-50/30">
+                          <td className="p-1.5 border-r border-stone-200 font-bold text-stone-900">CRM & Growth Manager</td>
+                          <td className="p-1.5 border-r border-stone-200 text-center">Manager</td>
+                          <td className="p-1.5 border-r border-stone-200 text-stone-600 leading-relaxed">Data capture; HubSpot automation; segment; khách hàng loyalty.</td>
+                          <td className="p-1.5 border-r border-stone-200 text-stone-600">Opt-in rate; CRM Revenue</td>
+                          <td className="p-1.5 text-right font-mono text-stone-850">25M - 40M <span className="text-[7.5px] text-stone-500 font-sans">(~$1.0k-$1.5k)</span></td>
+                        </tr>
+                        <tr className="border-b border-stone-200">
+                          <td className="p-1.5 border-r border-stone-200 font-bold text-stone-900">Financial Controller</td>
+                          <td className="p-1.5 border-r border-stone-200 text-center">Shared</td>
+                          <td className="p-1.5 border-r border-stone-200 text-stone-600 leading-relaxed">Pilot P&L; costing; cash burn visibility; thu hồi nợ phải thu.</td>
+                          <td className="p-1.5 border-r border-stone-200 text-stone-600 font-medium">BOM Variance; TB Close</td>
+                          <td className="p-1.5 text-right font-mono text-amber-700 font-bold bg-amber-500/5">30M - 50M <span className="text-[7.5px] text-amber-600 font-sans">(~$1.1k-$1.9k)</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Outsourcing vs In-house Logic */}
+                <div className="grid grid-cols-2 gap-4 text-[10px] mt-2">
+                  <div className="border border-stone-250 p-3 rounded bg-stone-50/30 space-y-1.5">
+                    <strong className="text-stone-900 text-xs flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-600" />
+                      Chiến lược Định vị Nhân sự Lõi:
+                    </strong>
+                    <p className="text-stone-600 leading-relaxed">
+                      Giữ độc quyền in-house hoặc seconded từ Fugalo/DLP các đầu vai trò <strong>"Decision Core"</strong> để bảo vệ thương hiệu và vận tốc. Tổng lương Gross cả đội Pilot dao động khoảng <strong>378 - 636 triệu VND/tháng</strong> (tức khoảng $14.4k - $24.3k/tháng), không gồm thưởng doanh số.
+                    </p>
+                  </div>
+                  <div className="border border-stone-250 p-3 rounded bg-stone-50/30 space-y-1.5">
+                    <strong className="text-stone-900 text-xs flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-600" />
+                      Mạng lưới Chuyên gia thuê ngoài:
+                    </strong>
+                    <p className="text-stone-600 leading-relaxed">
+                      Các mảng cần chuyên môn sâu và tính pháp lý cao sẽ thuê ngoài (Retainer/Contracted) gồm: <strong>Chuyên gia Sở hữu trí tuệ (rà soát xung đột tên DANS LA PEAU với Louis Vuitton Malletier ở nước ngoài)</strong>, chuyên gia thiết kế và tư vấn tối ưu hóa Thuế JV.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="print-page-footer hidden">
+                <span>Tài liệu mật phục vụ khảo sát nội bộ sáp nhập - Fugalo Co., Ltd © 2026</span>
+                <span>Trang {pageNums.staffing} / {totalReportPages}</span>
+              </div>
+            </div>
+          )}
+
+          {/* PAGE 5C: PILOT BUDGET & RACI PROTOCOL */}
+          {includeBudgetAndRaci && (
+            <div className="print-a4-page bg-white text-stone-900 border border-stone-300 w-[210mm] min-h-[297mm] mx-auto p-[20mm] font-serif flex flex-col justify-between relative shadow-2xl">
+              <div className="print-page-header hidden">
+                <span>FUGALO CO., LTD — STRATEGIC M&A CENTER</span>
+                <span>PHẦN VI: NGÂN SÁCH PILOT & MA TRẬN PHÂN QUYỀN (RACI)</span>
+              </div>
+
+              <div className="space-y-5 relative z-10 flex-1 font-sans">
+                <div className="border-b border-stone-200 pb-3 font-serif">
+                  <span className="text-[10px] font-sans font-mono uppercase tracking-widest text-amber-600 block">Phần VI</span>
+                  <h2 className="text-lg font-bold text-stone-900">Dự Toán Ngân Sách Pilot 90 Ngày & Ma Trận RACI</h2>
+                  <p className="text-xs text-stone-500 font-sans mt-0.5">
+                    Bảng phân bổ chi phí dự toán rạch ròi theo hai kịch bản rủi ro và sơ đồ phân quyền để khởi tác liên phòng ban.
+                  </p>
+                </div>
+
+                {/* Budget Table */}
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold text-stone-800 uppercase tracking-wider block font-mono">
+                    1. Bảng phân bổ Ngân sách Vận hành 90 ngày (Dự phóng điều hành)
+                  </span>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-[9px] text-left border-collapse border border-stone-200">
+                      <thead>
+                        <tr className="bg-stone-50 text-stone-700 border-b border-stone-200 font-semibold text-[9.5px]">
+                          <th className="p-1.5 border-r border-stone-200 w-1/3">Hạng mục chi phí vận hành</th>
+                          <th className="p-1.5 border-r border-stone-200 text-right">Kịch bản Tiết kiệm (Low Case)</th>
+                          <th className="p-1.5 border-r border-stone-200 text-right">Kịch bản Tiêu chuẩn (Base/High Case)</th>
+                          <th className="p-1.5 text-stone-600">Ghi chú chiến lược</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b border-stone-200">
+                          <td className="p-1.5 border-r border-stone-200 font-medium text-stone-900">Quỹ lương cho đội chuyên trách (90 ngày)</td>
+                          <td className="p-1.5 border-r border-stone-200 text-right font-mono text-stone-700">1,13 tỷ VND</td>
+                          <td className="p-1.5 border-r border-stone-200 text-right font-mono text-amber-700 font-bold bg-amber-500/5">1,91 tỷ VND</td>
+                          <td className="p-1.5 text-stone-500">Dành cho bộ khung chuyên viên in-house & secondment</td>
+                        </tr>
+                        <tr className="border-b border-stone-200 bg-stone-50/20">
+                          <td className="p-1.5 border-r border-stone-200 font-medium text-stone-900">Chi phí Chuyên gia ngoài & Tax/Accounting DD</td>
+                          <td className="p-1.5 border-r border-stone-200 text-right font-mono text-stone-700">0,35 tỷ VND</td>
+                          <td className="p-1.5 border-r border-stone-200 text-right font-mono text-stone-900">1,00 tỷ VND</td>
+                          <td className="p-1.5 text-stone-500">Legal rà soát LV Case, thuế, kiểm kho QoE-lite</td>
+                        </tr>
+                        <tr className="border-b border-stone-200">
+                          <td className="p-1.5 border-r border-stone-200 font-medium text-stone-900">Hạ tầng CRM, Looker, Web HubSpot & Haravan</td>
+                          <td className="p-1.5 border-r border-stone-200 text-right font-mono text-stone-700">0,09 tỷ VND</td>
+                          <td className="p-1.5 border-r border-stone-200 text-right font-mono text-stone-900">0,27 tỷ VND</td>
+                          <td className="p-1.5 text-stone-500">Ghi nhận data tích chéo, tích hợp CRM đo lường</td>
+                        </tr>
+                        <tr className="border-b border-stone-200 bg-stone-50/20">
+                          <td className="p-1.5 border-r border-stone-200 font-medium text-stone-900">Khuôn dập, Sampling & Bao bì Pilot</td>
+                          <td className="p-1.5 border-r border-stone-200 text-right font-mono text-stone-700">0,08 tỷ VND</td>
+                          <td className="p-1.5 border-r border-stone-200 text-right font-mono text-stone-900">0,25 tỷ VND</td>
+                          <td className="p-1.5 text-stone-500">Thú bông biểu trưng, túi zip kén bụi, logo mạ kim</td>
+                        </tr>
+                        <tr className="border-b border-stone-200">
+                          <td className="p-1.5 border-r border-stone-200 font-medium text-stone-900">PR, Thông cáo, Lookbook Co-branded lột tả</td>
+                          <td className="p-1.5 border-r border-stone-200 text-right font-mono text-stone-700">0,15 tỷ VND</td>
+                          <td className="p-1.5 border-r border-stone-200 text-right font-mono text-stone-900">0,45 tỷ VND</td>
+                          <td className="p-1.5 text-stone-500">Quay phim xưởng Hội An kể câu chuyện saddle stitch</td>
+                        </tr>
+                        <tr className="border-b border-stone-200 bg-stone-50/20">
+                          <td className="p-1.5 border-r border-stone-200 font-medium text-stone-900">Kênh Quảng cáo & Paid media mua sắm</td>
+                          <td className="p-1.5 border-r border-stone-200 text-right font-mono text-stone-700">0,10 tỷ VND</td>
+                          <td className="p-1.5 border-r border-stone-200 text-right font-mono text-stone-900">0,60 tỷ VND</td>
+                          <td className="p-1.5 text-stone-500">Có thể điều vị giảm thiểu dựa trên khách hàng VIP</td>
+                        </tr>
+                        <tr className="border-b border-stone-200 font-bold bg-stone-100">
+                          <td className="p-1.5 border-r border-stone-200">TỔNG NGÂN SÁCH (Không gồm PO sỉ sòng phẳng)</td>
+                          <td className="p-1.5 border-r border-stone-200 text-right font-mono text-stone-900 font-semibold">1,95 tỷ VND</td>
+                          <td className="p-1.5 border-r border-stone-200 text-right font-mono text-amber-700 font-bold bg-amber-500/5">4,68 tỷ VND</td>
+                          <td className="p-1.5 text-stone-900 font-serif">~ $74,600 - $178,500 USD (Vốn ban đầu)</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* RACI Matrix Block */}
+                <div className="space-y-1.5 mt-2">
+                  <span className="text-[10px] font-bold text-stone-800 uppercase tracking-wider block font-mono">
+                    2. Ma trận phân công quyền hạn & Trách nhiệm (RACI Matrix)
+                  </span>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-[8px] text-center border-collapse border border-stone-200 text-stone-700">
+                      <thead>
+                        <tr className="bg-stone-50 text-stone-800 border-b border-stone-200 font-bold">
+                          <th className="p-1 border-r border-stone-200 text-left w-36">Quy trình vận hành then chốt</th>
+                          <th className="p-1 border-r border-stone-200">Giám đốc (PD)</th>
+                          <th className="p-1 border-r border-stone-200">Vật tư / Product</th>
+                          <th className="p-1 border-r border-stone-200">QA / Xưởng</th>
+                          <th className="p-1 border-r border-stone-200">CRM & Growth</th>
+                          <th className="p-1 border-r border-stone-200">Thương mại / POS</th>
+                          <th className="p-1 border-r border-stone-200">Tài chính</th>
+                          <th className="p-1">Pháp chế / Counsel</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b border-stone-200">
+                          <td className="p-1 border-r border-stone-200 text-left font-semibold text-stone-900">Thiết kế mẫu & Duyệt rập</td>
+                          <td className="p-1 border-r border-stone-200 font-bold text-amber-600">A</td>
+                          <td className="p-1 border-r border-stone-200 font-bold text-emerald-700">R</td>
+                          <td className="p-1 border-r border-stone-200">C</td>
+                          <td className="p-1 border-r border-stone-200">C</td>
+                          <td className="p-1 border-r border-stone-200">I</td>
+                          <td className="p-1 border-r border-stone-200">I</td>
+                          <td className="p-1">C</td>
+                        </tr>
+                        <tr className="border-b border-stone-200 bg-stone-50/20">
+                          <td className="p-1 border-r border-stone-200 text-left font-semibold text-stone-900">Thị sát kiểm xưởng & Năng suất thợ</td>
+                          <td className="p-1 border-r border-stone-200 font-bold text-amber-600">A</td>
+                          <td className="p-1 border-r border-stone-200">C</td>
+                          <td className="p-1 border-r border-stone-200 font-bold text-emerald-700">R</td>
+                          <td className="p-1 border-r border-stone-200">I</td>
+                          <td className="p-1 border-r border-stone-200">C</td>
+                          <td className="p-1 border-r border-stone-200">I</td>
+                          <td className="p-1">C</td>
+                        </tr>
+                        <tr className="border-b border-stone-200">
+                          <td className="p-1 border-r border-stone-200 text-left font-semibold text-stone-900">Đồng bộ tệp CRM (M&A)</td>
+                          <td className="p-1 border-r border-stone-200 font-bold text-amber-600">A</td>
+                          <td className="p-1 border-r border-stone-200">I</td>
+                          <td className="p-1 border-r border-stone-200">I</td>
+                          <td className="p-1 border-r border-stone-200 font-bold text-emerald-700">R</td>
+                          <td className="p-1 border-r border-stone-200 font-bold text-emerald-700">R</td>
+                          <td className="p-1 border-r border-stone-200">I</td>
+                          <td className="p-1 font-bold text-emerald-700">R</td>
+                        </tr>
+                        <tr className="border-b border-stone-200 bg-stone-50/20">
+                          <td className="p-1 border-r border-stone-200 text-left font-semibold text-stone-900">Dịch vụ bảo dưỡng & Spa Refresh</td>
+                          <td className="p-1 border-r border-stone-200 font-bold text-amber-600">A</td>
+                          <td className="p-1 border-r border-stone-200">I</td>
+                          <td className="p-1 border-r border-stone-200 font-bold text-emerald-700">R</td>
+                          <td className="p-1 border-r border-stone-200">I</td>
+                          <td className="p-1 border-r border-stone-200 font-bold text-emerald-700">R</td>
+                          <td className="p-1 border-r border-stone-200 font-bold text-emerald-700">R</td>
+                          <td className="p-1">C</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <span className="text-[7.5px] italic text-stone-400 block">* Ghi chú: A = Accountable (Chịu trách nhiệm cuối), R = Responsible (Thực hiện), C = Consulted (Tham vấn), I = Informed (Nhận thông tin).</span>
+                </div>
+              </div>
+
+              <div className="print-page-footer hidden">
+                <span>Tài liệu mật phục vụ khảo sát nội bộ sáp nhập - Fugalo Co., Ltd © 2026</span>
+                <span>Trang {pageNums.budget} / {totalReportPages}</span>
+              </div>
+            </div>
+          )}
+
+          {/* PAGE 5D: 13-WEEK OPERATIONAL DEEP PLAYBOOK */}
+          {includePlaybook && (
+            <div className="print-a4-page bg-white text-stone-900 border border-stone-300 w-[210mm] min-h-[297mm] mx-auto p-[20mm] font-serif flex flex-col justify-between relative shadow-2xl">
+              <div className="print-page-header hidden">
+                <span>FUGALO CO., LTD — STRATEGIC M&A CENTER</span>
+                <span>PHẦN VII: KHUNG GIAO BAN THỰC HÀNH 13 TUẦN & GATES</span>
+              </div>
+
+              <div className="space-y-4 relative z-10 flex-1 font-sans">
+                <div className="border-b border-stone-200 pb-2 font-serif">
+                  <span className="text-[10px] font-sans font-mono uppercase tracking-widest text-amber-600 block">Phần VII</span>
+                  <h2 className="text-lg font-bold text-stone-900">Battle Playbook 13 Tuần & Các Chốt Chặn</h2>
+                  <p className="text-xs text-stone-500 font-sans mt-0.5">
+                    Kịch bản thực chiến triển khai từng tuần, phân phối và kiểm duyệt rủi ro bảo hộ của đối tác ngoại biên.
+                  </p>
+                </div>
+
+                {/* Chronology Summary Box */}
+                <div className="grid grid-cols-4 gap-2 text-[8px] leading-relaxed">
+                  <div className="p-2 bg-stone-50/50 border border-stone-200 rounded">
+                    <strong className="text-stone-900 block text-[8.5px] border-b border-stone-150 pb-0.5 mb-1 text-amber-600">TUẦN 1 - 3: CAO ĐIỂM DD</strong>
+                    <ul className="list-disc pl-3 text-stone-600 space-y-0.5 text-[7.5px]">
+                      <li>Ký NDA/clean team.</li>
+                      <li>Khởi dựng Data Room.</li>
+                      <li>Tra cứu trademark.</li>
+                      <li>Dựng mock-up P&L.</li>
+                    </ul>
+                  </div>
+                  <div className="p-2 bg-stone-50/50 border border-stone-200 rounded">
+                    <strong className="text-stone-900 block text-[8.5px] border-b border-stone-150 pb-0.5 mb-1 text-amber-600">TUẦN 4 - 6: PROTOTYPE</strong>
+                    <ul className="list-disc pl-3 text-stone-600 space-y-0.5 text-[7.5px]">
+                      <li>Sản xuất mẫu Leather V1.</li>
+                      <li>Review bao bì tinh xảo.</li>
+                      <li>Thiết kế GA4 Looker.</li>
+                      <li>Review pháp lý LV Case.</li>
+                    </ul>
+                  </div>
+                  <div className="p-2 bg-stone-50/50 border border-stone-200 rounded">
+                    <strong className="text-stone-900 block text-[8.5px] border-b border-stone-150 pb-0.5 mb-1 text-amber-600">TUẦN 7 - 9: TIỀN SẢN XUẤT</strong>
+                    <ul className="list-disc pl-3 text-stone-600 space-y-0.5 text-[7.5px]">
+                      <li>Duyệt PP Sample dập khuôn.</li>
+                      <li>Sản xuất lô thử nghiệm đầu.</li>
+                      <li>CRM HubSpot activation.</li>
+                      <li>Sales bày B2B gifting.</li>
+                    </ul>
+                  </div>
+                  <div className="p-2 bg-stone-50/50 border border-stone-200 rounded">
+                    <strong className="text-stone-900 block text-[8.5px] border-b border-stone-150 pb-0.5 mb-1 text-amber-600">TUẦN 10 - 13: GO-LIVE</strong>
+                    <ul className="list-disc pl-3 text-stone-600 space-y-0.5 text-[7.5px]">
+                      <li>Bày VIP showroom Dĩ An.</li>
+                      <li>Launch Capsule trực tuyến.</li>
+                      <li>Hạch toán doanh số.</li>
+                      <li>Biên bản M&A sáp nhập.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Gate thresholds */}
+                <div className="space-y-1.5 mt-2">
+                  <span className="text-[10px] font-bold text-stone-800 uppercase tracking-wider block font-mono">
+                    1. Hệ 03 Chốt chặn Gates lớn (Quyết định tiếp tục hoặc chấm dứt liên minh)
+                  </span>
+                  <div className="grid grid-cols-3 gap-3 text-[8.5px] leading-relaxed">
+                    <div className="p-2.5 border border-amber-200 bg-amber-500/5 rounded">
+                      <strong className="block text-amber-900 font-serif text-[9.5px] uppercase">GIAI ĐOẠN 30 NGÀY (GATE 1)</strong>
+                      <p className="text-stone-600 mt-1 leading-relaxed">
+                        Cơ bản hoàn tất Data room và pháp lý GCN ĐKDN. Lắp xong sơ bộ mô hình P&L và dải giá. Tránh hoàn toàn vấp nợ của doanh nghiệp cũ.
+                      </p>
+                    </div>
+                    <div className="p-2.5 border border-emerald-200 bg-emerald-500/5 rounded">
+                      <strong className="block text-emerald-900 font-serif text-[9.5px] uppercase">GIAI ĐOẠN 60 NGÀY (GATE 2)</strong>
+                      <p className="text-stone-600 mt-1 leading-relaxed">
+                        Duyệt dập khuôn rập PP sample đạt chỉ tiêu tay nghề khâu tay Saddle-Stitch. Chạy email HubSpot tracking & opt-in test tỉ lệ &gt; 25%.
+                      </p>
+                    </div>
+                    <div className="p-2.5 border border-rose-200 bg-rose-500/5 rounded">
+                      <strong className="block text-rose-900 font-serif text-[9.5px] uppercase">GIAI ĐOẠN 90 NGÀY (GATE 3)</strong>
+                      <p className="text-stone-600 mt-1 leading-relaxed">
+                        Lượng bán chéo đạt chuẩn GM blened &gt; 55%. Hoàn thành IP search tìm kiếm rủi ro ngoại vi sạch sẽ, rập sẵn lộ trình dập nhãn bảo hiểm.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Target design block */}
+                <div className="space-y-1.5 mt-2">
+                  <span className="text-[10px] font-bold text-stone-800 uppercase tracking-wider block font-mono">
+                    2. Chỉ số đo lường KPI cam kết cho liên minh vận hành thử
+                  </span>
+                  <div className="grid grid-cols-4 gap-2 text-center text-[9px]">
+                    <div className="p-2 border border-stone-200 rounded">
+                      <span className="text-[7.5px] text-stone-500 block uppercase font-mono">Lao động đúng tuần</span>
+                      <strong className="text-xs text-stone-900 block mt-0.5">≥ 85% Milestone</strong>
+                    </div>
+                    <div className="p-2 border border-stone-200 rounded">
+                      <span className="text-[7.5px] text-stone-500 block uppercase font-mono">Sample đạt chuẩn vòng 2</span>
+                      <strong className="text-xs text-stone-900 block mt-0.5">≥ 80% duyệt nhanh</strong>
+                    </div>
+                    <div className="p-2 border border-stone-200 rounded">
+                      <span className="text-[7.5px] text-stone-500 block uppercase font-mono">Lỗi đầu vào QA xưởng</span>
+                      <strong className="text-xs text-stone-900 block mt-0.5">≤ 2.5% loại bỏ</strong>
+                    </div>
+                    <div className="p-2 border border-stone-200 rounded">
+                      <span className="text-[7.5px] text-stone-500 block uppercase font-mono">Spa bảo hành đóng SLA</span>
+                      <strong className="text-xs text-stone-900 block mt-0.5">≤ 10 ngày xử lý</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="print-page-footer hidden">
+                <span>Tài liệu mật phục vụ khảo sát nội bộ sáp nhập - Fugalo Co., Ltd © 2026</span>
+                <span>Trang {pageNums.playbook} / {totalReportPages}</span>
               </div>
             </div>
           )}
@@ -964,7 +1447,7 @@ export default function PrintExecutiveReport({
               {/* Standard Page Footer */}
               <div className="print-page-footer hidden">
                 <span>Tài liệu mật phục vụ khảo sát nội bộ sáp nhập - Fugalo Co., Ltd © 2026</span>
-                <span>Trang 6 / 6</span>
+                <span>Trang {pageNums.mou} / {totalReportPages}</span>
               </div>
             </div>
           )}

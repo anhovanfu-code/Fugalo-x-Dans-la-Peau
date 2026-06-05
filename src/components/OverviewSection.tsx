@@ -5,9 +5,20 @@
 
 import React, { useState } from "react";
 import { BRAND_PROFILES } from "../data";
-import { AlertCircle, ArrowUpRight, CheckCircle2, ShieldAlert, Sparkles, TrendingUp, Info } from "lucide-react";
+import { AlertCircle, ArrowUpRight, CheckCircle2, ShieldAlert, Sparkles, TrendingUp, Info, Wallet, DollarSign, ArrowRight, ShieldCheck, Star } from "lucide-react";
 
-export default function OverviewSection() {
+interface OverviewSectionProps {
+  dealParams?: {
+    activeModel: "wholesale" | "revshare" | "capsule";
+    volume: number;
+    retailPrice: number;
+    cogsPercent: number;
+    discountPercent: number;
+    marketingCost: number;
+  };
+}
+
+export default function OverviewSection({ dealParams }: OverviewSectionProps = {}) {
   const [userRating, setUserRating] = useState({
     trustScore: 4,
     productionVeracity: 3,
@@ -51,6 +62,44 @@ export default function OverviewSection() {
 
   const currentVerdict = getVerdict(totalReadiness);
 
+  // Synchronized inputs from DealCalculator falling back to default capsule values
+  const activeModel = dealParams?.activeModel ?? "capsule";
+  const volume = dealParams?.volume ?? 100;
+  const retailPrice = dealParams?.retailPrice ?? 3500000;
+  const cogsPercent = dealParams?.cogsPercent ?? 25;
+  const discountPercent = dealParams?.discountPercent ?? 45;
+  const marketingCost = dealParams?.marketingCost ?? 30000000;
+
+  // Outputs computation for dynamic dashboard representation
+  const totalRevenue = volume * retailPrice;
+  const totalCogs = (cogsPercent / 100) * totalRevenue;
+
+  let investmentRequired = 0;
+  let expectedCashFlow = 0;
+  let modelLabel = "";
+
+  if (activeModel === "wholesale") {
+    const purchaseCost = totalRevenue * (1 - discountPercent / 100);
+    investmentRequired = purchaseCost + marketingCost;
+    expectedCashFlow = totalRevenue - purchaseCost - marketingCost;
+    modelLabel = "Mua Sỉ (Wholesale)";
+  } else if (activeModel === "revshare") {
+    investmentRequired = marketingCost * 0.5;
+    expectedCashFlow = (totalRevenue * (discountPercent / 100)) - (marketingCost * 0.5);
+    modelLabel = "Chia Sẻ Doanh Thu (Revenue Share)";
+  } else {
+    // capsule
+    const totalIntegratedCosts = totalCogs + marketingCost;
+    const netProfitPool = Math.max(0, totalRevenue - totalIntegratedCosts);
+    investmentRequired = (totalCogs * 0.5) + (marketingCost * 0.5); // Shared seed costs
+    expectedCashFlow = netProfitPool * 0.5; // Profit split
+    modelLabel = "Đồng Thương Hiệu Capsule (Co-branded)";
+  }
+
+  const formatVND = (num: number) => {
+    return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(Math.round(num));
+  };
+
   return (
     <div className="space-y-8 animate-fade-in" id="overview-section">
       {/* 1. KEY RECOMMENDATION VERDICT BANNER */}
@@ -86,6 +135,64 @@ export default function OverviewSection() {
           <div>
             <div className="text-sm font-bold uppercase tracking-wider">{currentVerdict.title}</div>
             <p className="text-xs mt-1 text-stone-750 leading-normal font-medium">{currentVerdict.desc}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* QUICK FINANCIAL SNAPSHOT WIDGET FROM DEAL CALCULATOR */}
+      <div className="bg-white border border-stone-200 rounded-xl p-5 sm:p-6 shadow-sm relative overflow-hidden" id="financial-snapshot-widget">
+        <div className="absolute top-0 left-0 w-32 h-32 bg-amber-500/[0.01] rounded-full blur-2xl pointer-events-none" />
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-stone-100 pb-4 mb-4">
+          <div className="space-y-1">
+            <span className="text-[10px] font-mono text-amber-600 uppercase tracking-wider font-extrabold flex items-center gap-1">
+              <Wallet className="w-3.5 h-3.5" />
+              <span>BẢNG ĐIỀU KHIỂN TÀI CHÍNH M&A NHANH (LIVE DEAL METRICS)</span>
+            </span>
+            <h4 className="text-sm font-bold text-stone-900">
+              Chỉ số Dòng vốn & Kỳ vọng từ Phương án: <span className="text-amber-600 font-extrabold">{modelLabel}</span>
+            </h4>
+          </div>
+          <span className="text-[10px] text-stone-500 font-mono bg-stone-50 border border-stone-200 px-2 py-1 rounded font-bold uppercase tracking-wide">
+            Cập nhật từ DealCalculator ({volume} sản phẩm)
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Item 1: Expected total investment */}
+          <div className="bg-stone-50 border border-stone-200 rounded-lg p-4 flex flex-col justify-between">
+            <div className="text-[10px] text-stone-500 font-mono font-bold uppercase tracking-wider">Tổng mức đầu tư dự kiến</div>
+            <div className="text-xl sm:text-2xl font-serif font-extrabold text-stone-900 my-1">
+              {formatVND(investmentRequired)}
+            </div>
+            <p className="text-[11px] text-stone-605 leading-tight font-medium">
+              {activeModel === "wholesale" 
+                ? "Bao gồm vốn mua sỉ đứt + 100% chi phí tiếp thị" 
+                : activeModel === "revshare"
+                ? "Gồm 50% chi phí tiếp thị thử nghiệm"
+                : "Gồm 50% chi phí sản xuất (COGS) + 50% tiếp thị"}
+            </p>
+          </div>
+
+          {/* Item 2: Expected return cash flow */}
+          <div className="bg-emerald-50/20 border border-emerald-200 rounded-lg p-4 flex flex-col justify-between">
+            <div className="text-[10px] text-emerald-850 font-mono font-bold uppercase tracking-wider">Dòng tiền kỳ vọng (Fugalo Net)</div>
+            <div className="text-xl sm:text-2xl font-serif font-extrabold text-emerald-700 my-1">
+              {formatVND(expectedCashFlow)}
+            </div>
+            <p className="text-[11px] text-emerald-800 leading-tight font-semibold">
+              Kỳ vọng lợi nhuận ròng thu về dựa trên giả định bán sạch {volume} sản phẩm thử nghiệm.
+            </p>
+          </div>
+
+          {/* Item 3: Total Sales Revenue Pool */}
+          <div className="bg-stone-50 border border-stone-200 rounded-lg p-4 flex flex-col justify-between sm:col-span-2 lg:col-span-1">
+            <div className="text-[10px] text-stone-500 font-mono font-bold uppercase tracking-wider">Quy mô doanh thu tổng vụ</div>
+            <div className="text-xl sm:text-2xl font-serif font-extrabold text-amber-700 my-1">
+              {formatVND(totalRevenue)}
+            </div>
+            <p className="text-[11px] text-stone-605 leading-tight font-medium">
+              Doanh thu từ mốc giá bán lẻ {formatVND(retailPrice)} / sp.
+            </p>
           </div>
         </div>
       </div>
@@ -160,6 +267,98 @@ export default function OverviewSection() {
               <p className="text-stone-600 leading-normal">{BRAND_PROFILES.dansLaPeau.roleInPartnership}</p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* COMP_TABLE: MARKET STATUS & COMPETITOR COMPARISON TABLE */}
+      <div className="bg-white border border-stone-200 rounded-xl p-6 shadow-sm" id="competitor-comparison-table">
+        <div className="flex items-center gap-2 mb-2 pb-3 border-b border-stone-100">
+          <Star className="w-5 h-5 text-amber-500" />
+          <div>
+            <h3 className="text-base font-serif font-bold text-stone-900">Bảng So Sánh Vị Thế Thị Trường & Đối Thủ</h3>
+            <p className="text-xs text-stone-500 font-medium font-sans">
+              So sánh trực quan sức mạnh chế tác, rủi ro, và rào cản tài chính của Dans la Peau so với các đối thủ ngoài luồng.
+            </p>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs font-sans tracking-tight border-collapse">
+            <thead>
+              <tr className="bg-stone-50 border-b border-stone-200">
+                <th className="py-3 px-4 font-extrabold text-stone-600 uppercase font-mono tracking-wider w-[22%]">Tiêu chuẩn so sánh</th>
+                <th className="py-3 px-4 font-extrabold text-amber-800 bg-amber-500/[0.04] border-x border-stone-200 uppercase font-mono tracking-wider w-[26%]">Đối tác (Dans la Peau)</th>
+                <th className="py-3 px-4 font-extrabold text-stone-600 uppercase font-mono tracking-wider w-[26%]">May Da Local đại trà</th>
+                <th className="py-3 px-4 font-extrabold text-stone-600 uppercase font-mono tracking-wider w-[26%]">Hiệu Xa Xỉ Nhập Ngoài</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-stone-100">
+              <tr>
+                <td className="py-3 px-4 font-extrabold text-stone-800 bg-stone-50/50">Kỹ thuật Chế tác</td>
+                <td className="py-3 px-4 text-stone-700 bg-amber-500/[0.015] border-x border-stone-200 font-semibold">
+                  <span className="text-emerald-700 font-bold">Khâu tay thủ công (Saddle-stitch)</span> đỉnh cao từ thợ cả, tỉ mỉ từng đường cạnh chỉ rập lỗ nỉ.
+                </td>
+                <td className="py-3 px-4 text-stone-500 font-medium">
+                  Rập sẵn may máy hàng loạt đại trà, viền chỉ mỏng dễ sờn, sơn cạnh công nghiệp nhanh bong tróc.
+                </td>
+                <td className="py-3 px-4 text-stone-500 font-medium">
+                  Chế tác cao cấp kết hợp may máy thượng hạng của các nhà mốt Paris / Milan có kiểm định nghiêm ngặt.
+                </td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 font-extrabold text-stone-800 bg-stone-50/50">Cá nhân hóa (Bespoke)</td>
+                <td className="py-3 px-4 text-stone-700 bg-amber-500/[0.015] border-x border-stone-200 font-semibold">
+                  <span className="text-emerald-700 font-bold">Linh hoạt cực cao</span>: Khắc nổi chữ viết monogram nhiệt tức thì; tinh chỉnh rập theo size máy, dây đeo.
+                </td>
+                <td className="py-3 px-4 text-stone-500 font-medium">
+                  Không hỗ trợ hoặc hạn chế mẫu mã. Chỉ bán khuôn hàng có sẵn bằng da ép hoặc giả da.
+                </td>
+                <td className="py-3 px-4 text-stone-500 font-medium">
+                  Tính phí bespoke đắt đỏ độc bản (thêm vài ngàn USD) và thời gian xếp hàng chế tác chờ hàng quý.
+                </td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 font-extrabold text-stone-800 bg-stone-50/50">Dịch vụ Hậu mãi (Spa)</td>
+                <td className="py-3 px-4 text-stone-700 bg-amber-500/[0.015] border-x border-stone-200 font-semibold">
+                  Bảo hành <span className="font-bold">1 năm bản hãng</span>; đối tác liên thông dịch vụ phục hồi chăm sóc da của Fugalo nhanh gọn 7-10 ngày.
+                </td>
+                <td className="py-3 px-4 text-stone-500 font-medium">
+                  Mua đứt bán đoạn không bảo dưỡng hoặc bảo hành tượng trưng ngắn ngủi 1 tháng.
+                </td>
+                <td className="py-3 px-4 text-stone-500 font-medium">
+                  Gửi sửa sang Châu Âu vô cùng gian nan, chờ đợi từ 3-6 tháng, chí phí cao ngoại hạng.
+                </td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 font-extrabold text-stone-800 bg-stone-50/50">Tầm giá sản phẩm</td>
+                <td className="py-3 px-4 text-stone-700 bg-amber-500/[0.015] border-x border-stone-200 font-semibold">
+                  <span className="text-amber-700 font-extrabold">Từ 980k đến 16.8M VND</span>. Phân khúc giá tối ưu cực lớn so với giá trị thực của da cao cấp.
+                </td>
+                <td className="py-3 px-4 text-stone-500 font-medium">
+                  Từ 300k đến 2M VND. Giá rẻ dễ tiếp cận nhưng thiếu uy hiếp xa xỉ, không bền.
+                </td>
+                <td className="py-3 px-4 text-stone-500 font-medium">
+                  Từ 40M đến hơn 500M VND. Biên lợi nhuận chịu phí gánh nặng giá trị thương hiệu ảo cao.
+                </td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 font-extrabold text-stone-800 bg-stone-50/50">Pháp lý & Thương hiệu</td>
+                <td className="py-3 px-4 text-rose-800 bg-amber-500/[0.015] border-x border-stone-200 font-semibold">
+                  <span className="flex items-center gap-1 text-rose-700 font-bold">
+                    <ShieldAlert className="w-3.5 h-3.5 shrink-0" />
+                    <span>Rủi ro bảo hộ nhãn hiệu</span>
+                  </span>
+                  Do trùng lắp tên với Louis Vuitton group ở phạm vi fragrance/cosmetics.
+                </td>
+                <td className="py-3 px-4 text-stone-500 font-medium">
+                  Sạch sẽ pháp lý, đăng ký nhãn độc lập dễ dàng nhưng không có câu chuyện lịch sử.
+                </td>
+                <td className="py-3 px-4 text-stone-500 font-semibold text-emerald-700">
+                  Pháp lý toàn cầu, bảo hộ nhãn quốc tế chặt chẽ, sở hữu câu chuyện thương hiệu trăm năm.
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 

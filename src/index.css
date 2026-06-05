@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Outfit", "Plus Jakarta Sans", "Inter", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
@@ -20,6 +20,15 @@
   --color-amber-800: #7a1d04;
   --color-amber-900: #621703;
   --color-amber-950: #3b0a00;
+}
+
+/* Global Typography Enforcement for Standing Geometric Font Style */
+body {
+  font-family: "Plus Jakarta Sans", "Inter", sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6, .font-serif {
+  font-family: "Outfit", "Plus Jakarta Sans", sans-serif !important;
 }
 
 /* Custom scrollbar and scroll behaviors */
