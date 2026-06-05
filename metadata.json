@@ -1,0 +1,6 @@
+{
+  "name": "Fugalo x Dans la Peau Partnership Planner",
+  "description": "Interactive strategic evaluation dashboard, due diligence tracker, financial simulator, and 90-day cooperation roadmap for the Fugalo x Dans la Peau luxury leather joint venture.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

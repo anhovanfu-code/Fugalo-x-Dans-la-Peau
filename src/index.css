@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Custom Terracotta Brand Color from Fugalo Logo */
+  --color-amber-50: #fdf5f2;
+  --color-amber-100: #fbeae3;
+  --color-amber-200: #f8d1c2;
+  --color-amber-300: #f2a68b;
+  --color-amber-400: #ea7a53;
+  --color-amber-450: #e4592f;
+  --color-amber-500: #de4c1d; /* Perfect match to Fugalo Logo Terracotta Vermilion */
+  --color-amber-550: #c13b11;
+  --color-amber-600: #b5340d;
+  --color-amber-700: #932506;
+  --color-amber-800: #7a1d04;
+  --color-amber-900: #621703;
+  --color-amber-950: #3b0a00;
+}
+
+/* Custom scrollbar and scroll behaviors */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
