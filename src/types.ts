@@ -12,6 +12,7 @@ export interface DueDiligenceItem {
   status: "pending" | "passed" | "failed" | "action_required";
   notes?: string;
   riskLevel: "high" | "medium" | "low";
+  deadline?: string; // Optional ISO date or string for background deadlines
 }
 
 export interface TimelinePhase {
@@ -24,6 +25,7 @@ export interface TimelinePhase {
     id: string;
     text: string;
     completed: boolean;
+    deadline?: string; // Optional ISO date
   }>;
   status: "upcoming" | "active" | "completed";
 }
@@ -72,6 +74,17 @@ export interface WeeklyMilestone {
   focus: string;
   output: string;
   stopCondition: string;
+}
+
+export interface NotificationItem {
+  id: string;
+  title: string;
+  body: string;
+  timestamp: string; // ISO string
+  read: boolean;
+  type: "deadline" | "update" | "sync" | "system";
+  actionTab?: string;
+  targetId?: string;
 }
 
 export interface PresetSKU {

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DUE_DILIGENCE_DB, COOPERATION_TIMELINE, KPI_BENCHMARKS } from "./data";
-import { DueDiligenceItem, TimelinePhase, KPITargetItem } from "./types";
+import { DueDiligenceItem, TimelinePhase, KPITargetItem, NotificationItem } from "./types";
 import Header from "./components/Header";
 import OverviewSection from "./components/OverviewSection";
 import StrategyFitSection from "./components/StrategyFitSection";
@@ -22,12 +22,115 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<string>("overview");
   const [viewMode, setViewMode] = useState<"tabbed" | "full">("tabbed"); // Defaults to 'tabbed' for an elegant, compact and professional app interface
   
-  // Master states
-  const [checklistItems, setChecklistItems] = useState<DueDiligenceItem[]>(DUE_DILIGENCE_DB);
-  const [timelinePhases, setTimelinePhases] = useState<TimelinePhase[]>(COOPERATION_TIMELINE);
-  const [kpiTargets, setKpiTargets] = useState<KPITargetItem[]>(KPI_BENCHMARKS);
+  // Storage Synchronization Status
+  const [syncStatus, setSyncStatus] = useState<"synced" | "saving" | "offline">("synced");
+
+  // Notifications State (persisted inside LocalStorage)
+  const [notifications, setNotifications] = useState<NotificationItem[]>(() => {
+    try {
+      const cached = localStorage.getItem("fugalo_notifications_v2");
+      return cached ? JSON.parse(cached) : [
+        {
+          id: "sys-welcome",
+          title: "Chào mừng bạn đến với M&A Portal",
+          body: "Tính năng Offline Caching và Cấu hình FCM Push Notifications đã được kích hoạt trực thuộc nền tảng Fugalo.",
+          timestamp: new Date().toISOString(),
+          read: false,
+          type: "system"
+        }
+      ];
+    } catch (_) {
+      return [];
+    }
+  });
+
+  // Master states loaded with LocalStorage caching
+  const [checklistItems, setChecklistItems] = useState<DueDiligenceItem[]>(() => {
+    try {
+      const cached = localStorage.getItem("fugalo_checklist_v2");
+      if (cached) {
+        return JSON.parse(cached);
+      }
+    } catch (_) {}
+
+    // First launch - set dynamic local mock deadlines (within or near 48 hours for immediate testing)
+    const now = new Date();
+    return DUE_DILIGENCE_DB.map((item) => {
+      if (item.id === "leg-01") {
+        // 18 hours in future (critical high risk) - fits within 48h
+        const d = new Date(now.getTime() + 18 * 60 * 60 * 1000);
+        return { ...item, deadline: d.toISOString() };
+      }
+      if (item.id === "leg-03") {
+        // 32 hours in future - fits within 48h
+        const d = new Date(now.getTime() + 32 * 60 * 60 * 1000);
+        return { ...item, deadline: d.toISOString() };
+      }
+      if (item.id === "prod-01") {
+        // 45 hours in future - fits within 48h
+        const d = new Date(now.getTime() + 45 * 60 * 60 * 1000);
+        return { ...item, deadline: d.toISOString() };
+      }
+      if (item.id === "fin-01") {
+        // 5 days in future - outside 48h
+        const d = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
+        return { ...item, deadline: d.toISOString() };
+      }
+      return item;
+    });
+  });
+
+  const [timelinePhases, setTimelinePhases] = useState<TimelinePhase[]>(() => {
+    try {
+      const cached = localStorage.getItem("fugalo_timeline_v2");
+      if (cached) {
+        return JSON.parse(cached);
+      }
+    } catch (_) {}
+
+    const now = new Date();
+    return COOPERATION_TIMELINE.map((phase) => {
+      if (phase.phaseNumber === 1) {
+        return {
+          ...phase,
+          tasks: phase.tasks.map((task, idx) => {
+            if (idx === 0) {
+              // 12 hours from now - critical
+              const d = new Date(now.getTime() + 12 * 60 * 60 * 1000);
+              return { ...task, deadline: d.toISOString() };
+            }
+            if (idx === 1) {
+              // 28 hours from now - critical
+              const d = new Date(now.getTime() + 28 * 60 * 60 * 1000);
+              return { ...task, deadline: d.toISOString() };
+            }
+            if (idx === 2) {
+              // 4 days from now - not critical
+              const d = new Date(now.getTime() + 4 * 24 * 60 * 60 * 1000);
+              return { ...task, deadline: d.toISOString() };
+            }
+            return task;
+          })
+        };
+      }
+      return phase;
+    });
+  });
+
+  const [kpiTargets, setKpiTargets] = useState<KPITargetItem[]>(() => {
+    try {
+      const cached = localStorage.getItem("fugalo_kpis_v2");
+      if (cached) return JSON.parse(cached);
+    } catch (_) {}
+    return KPI_BENCHMARKS;
+  });
+
   const [showProposalDraft, setShowProposalDraft] = useState<boolean>(false);
   const [showPrintReport, setShowPrintReport] = useState<boolean>(false);
+
+  // Keep track of previous items for change-detection triggers
+  const [prevChecklistItems, setPrevChecklistItems] = useState<DueDiligenceItem[]>(checklistItems);
+  const [prevTimelinePhases, setPrevTimelinePhases] = useState<TimelinePhase[]>(timelinePhases);
 
   // Synchronized financial modeling inputs for matching report calculators
   const [activeModel, setActiveModel] = useState<"wholesale" | "revshare" | "capsule">("capsule");
@@ -36,6 +139,204 @@ export default function App() {
   const [cogsPercent, setCogsPercent] = useState<number>(25);
   const [discountPercent, setDiscountPercent] = useState<number>(45);
   const [marketingCost, setMarketingCost] = useState<number>(30000000); // 30m VND
+
+  // trigger notification helper definition
+  const triggerNotification = (
+    title: string,
+    body: string,
+    type: "deadline" | "update" | "sync" | "system" = "update",
+    actionTab?: string,
+    targetId?: string
+  ) => {
+    const newNotif: NotificationItem = {
+      id: Math.random().toString(36).substring(2, 9),
+      title,
+      body,
+      timestamp: new Date().toISOString(),
+      read: false,
+      type,
+      actionTab,
+      targetId
+    };
+
+    setNotifications((prev) => [newNotif, ...prev]);
+
+    // Native Browser Notification Dispatch
+    if ("Notification" in window && Notification.permission === "granted") {
+      try {
+        new Notification(title, {
+          body,
+          icon: "/favicon.ico",
+        });
+      } catch (err) {
+        console.warn("Desktop/iOS Native Web Push alert suppressed inside container:", err);
+      }
+    }
+
+    // Gentle iOS PWA-compliant device haptic feedback simulation
+    try {
+      if ("vibrate" in navigator) {
+        navigator.vibrate([100, 50, 100]);
+      }
+    } catch (_) {}
+  };
+
+  // Caching Persistors & Network state binders
+  useEffect(() => {
+    setSyncStatus("saving");
+    const timer = setTimeout(() => {
+      setSyncStatus(navigator.onLine ? "synced" : "offline");
+    }, 600);
+
+    try {
+      localStorage.setItem("fugalo_checklist_v2", JSON.stringify(checklistItems));
+    } catch (_) {}
+
+    return () => clearTimeout(timer);
+  }, [checklistItems]);
+
+  useEffect(() => {
+    setSyncStatus("saving");
+    const timer = setTimeout(() => {
+      setSyncStatus(navigator.onLine ? "synced" : "offline");
+    }, 600);
+
+    try {
+      localStorage.setItem("fugalo_timeline_v2", JSON.stringify(timelinePhases));
+    } catch (_) {}
+
+    return () => clearTimeout(timer);
+  }, [timelinePhases]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("fugalo_kpis_v2", JSON.stringify(kpiTargets));
+    } catch (_) {}
+  }, [kpiTargets]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("fugalo_notifications_v2", JSON.stringify(notifications));
+    } catch (_) {}
+  }, [notifications]);
+
+  // Handle live network listeners
+  useEffect(() => {
+    const handleOnline = () => setSyncStatus("synced");
+    const handleOffline = () => setSyncStatus("offline");
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  // Reactive task status update alerts (Integrates FCM triggers for status updates)
+  useEffect(() => {
+    checklistItems.forEach((item) => {
+      const prev = prevChecklistItems.find((p) => p.id === item.id);
+      if (prev && prev.status !== item.status) {
+        let statusLabel = "";
+        switch (item.status) {
+          case "passed": statusLabel = "ĐẠT CHUẨN"; break;
+          case "failed": statusLabel = "BẤT THƯỜNG / RỦI RO"; break;
+          case "action_required": statusLabel = "CẦN HÀNH ĐỘNG"; break;
+          default: statusLabel = "CHƯA RÕ";
+        }
+        triggerNotification(
+          "Cập Nhật M&A Due Diligence",
+          `Hạng mục "${item.vietnameseQuestion}" sang trạng thái: ${statusLabel}`,
+          "update",
+          "due-diligence",
+          item.id
+        );
+      }
+    });
+    setPrevChecklistItems(checklistItems);
+  }, [checklistItems]);
+
+  useEffect(() => {
+    timelinePhases.forEach((phase) => {
+      const prevPhase = prevTimelinePhases.find((p) => p.phaseNumber === phase.phaseNumber);
+      if (prevPhase) {
+        phase.tasks.forEach((task) => {
+          const prevTask = prevPhase.tasks.find((t) => t.id === task.id);
+          if (prevTask && prevTask.completed !== task.completed) {
+            triggerNotification(
+              "Tiến độ Pilot Lộ trình",
+              `Lộ trình "${task.text}" đã chuyển sang: ${task.completed ? "HOÀN THÀNH" : "CHƯA HOÀN THÀNH"}`,
+              "update",
+              "timeline",
+              task.id
+            );
+          }
+        });
+      }
+    });
+    setPrevTimelinePhases(timelinePhases);
+  }, [timelinePhases]);
+
+  // Background scanner (Scans deadline occurrences and alerts if critical <= 48 hours)
+  useEffect(() => {
+    const runBackgroundDeadlineCheck = () => {
+      const now = new Date();
+      const fortyEightHours = 48 * 60 * 60 * 1000;
+      
+      // Check Due Diligence Item deadlines
+      checklistItems.forEach((item) => {
+        if (item.status !== "passed" && item.deadline) {
+          const deadlineDate = new Date(item.deadline);
+          const diff = deadlineDate.getTime() - now.getTime();
+          if (diff > 0 && diff <= fortyEightHours) {
+            const cacheKey = `notified_deadline_crit_${item.id}`;
+            const alreadyNotified = localStorage.getItem(cacheKey);
+            if (!alreadyNotified) {
+              const hours = Math.round(diff / (1000 * 60 * 60));
+              triggerNotification(
+                "Cảnh Báo Hạn Chót 48h",
+                `Yêu cầu rà soát: "${item.vietnameseQuestion}" sắp tới hạn chót trong ${hours} giờ nữa!`,
+                "deadline",
+                "due-diligence",
+                item.id
+              );
+              localStorage.setItem(cacheKey, "true");
+            }
+          }
+        }
+      });
+
+      // Check Tasks list deadlines inside roadmaps
+      timelinePhases.forEach((phase) => {
+        phase.tasks.forEach((task) => {
+          if (!task.completed && task.deadline) {
+            const deadlineDate = new Date(task.deadline);
+            const diff = deadlineDate.getTime() - now.getTime();
+            if (diff > 0 && diff <= fortyEightHours) {
+              const cacheKey = `notified_deadline_crit_${task.id}`;
+              const alreadyNotified = localStorage.getItem(cacheKey);
+              if (!alreadyNotified) {
+                const hours = Math.round(diff / (1000 * 60 * 60));
+                triggerNotification(
+                  "Lộ Trình Pilot khẩn cấp",
+                  `Nhiệm vụ "${task.text}" sẽ hết hạn trong ${hours} giờ nữa!`,
+                  "deadline",
+                  "timeline",
+                  task.id
+                );
+                localStorage.setItem(cacheKey, "true");
+              }
+            }
+          }
+        });
+      });
+    };
+
+    runBackgroundDeadlineCheck();
+    // Scan every 30 seconds
+    const interval = setInterval(runBackgroundDeadlineCheck, 30000);
+    return () => clearInterval(interval);
+  }, [checklistItems, timelinePhases]);
 
   // Handle active tab change and support smooth scroll in continuous view mode
   const handleTabChange = (tabId: string) => {
@@ -80,6 +381,10 @@ export default function App() {
         onPrintClick={() => setShowPrintReport(true)}
         viewMode={viewMode}
         setViewMode={setViewMode}
+        syncStatus={syncStatus}
+        notifications={notifications}
+        setNotifications={setNotifications}
+        triggerNotification={triggerNotification}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-24 sm:py-10 space-y-12">
