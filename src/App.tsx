@@ -16,7 +16,8 @@ import KPITracker from "./components/KPITracker";
 import ProposalMaker from "./components/ProposalMaker";
 import PrintExecutiveReport from "./components/PrintExecutiveReport";
 import B2BGiftingCalculator from "./components/B2BGiftingCalculator";
-import { Sparkles, FileSpreadsheet, ArrowRight, DownloadCloud, Landmark, ShieldCheck } from "lucide-react";
+import AdminCockpit from "./components/AdminCockpit";
+import { Sparkles, FileSpreadsheet, ArrowRight, DownloadCloud, Landmark, ShieldCheck, Settings } from "lucide-react";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>("overview");
@@ -139,6 +140,169 @@ export default function App() {
   const [cogsPercent, setCogsPercent] = useState<number>(25);
   const [discountPercent, setDiscountPercent] = useState<number>(45);
   const [marketingCost, setMarketingCost] = useState<number>(30000000); // 30m VND
+
+  // --- HISTORY MANAGER FOR DUE DILIGENCE CHECKLIST ---
+  const [checklistPast, setChecklistPast] = useState<DueDiligenceItem[][]>([]);
+  const [checklistFuture, setChecklistFuture] = useState<DueDiligenceItem[][]>([]);
+  const isChecklistUndoingRedoing = React.useRef(false);
+
+  const updateChecklistWithHistory = (newItems: DueDiligenceItem[] | ((prev: DueDiligenceItem[]) => DueDiligenceItem[])) => {
+    if (isChecklistUndoingRedoing.current) {
+      if (typeof newItems === "function") {
+        setChecklistItems(newItems);
+      } else {
+        setChecklistItems(newItems);
+      }
+      return;
+    }
+    setChecklistItems((current) => {
+      const resolved = typeof newItems === "function" ? newItems(current) : newItems;
+      // Capture current checklist state in history
+      setChecklistPast(prev => [...prev.slice(-29), current]);
+      setChecklistFuture([]);
+      return resolved;
+    });
+  };
+
+  const handleChecklistUndo = () => {
+    if (checklistPast.length === 0) return;
+    isChecklistUndoingRedoing.current = true;
+    const current = checklistItems;
+    const previous = checklistPast[checklistPast.length - 1];
+    setChecklistItems(previous);
+    setChecklistFuture(prev => [current, ...prev]);
+    setChecklistPast(prev => prev.slice(0, -1));
+    setTimeout(() => {
+      isChecklistUndoingRedoing.current = false;
+    }, 50);
+  };
+
+  const handleChecklistRedo = () => {
+    if (checklistFuture.length === 0) return;
+    isChecklistUndoingRedoing.current = true;
+    const current = checklistItems;
+    const next = checklistFuture[0];
+    setChecklistItems(next);
+    setChecklistPast(prev => [...prev, current]);
+    setChecklistFuture(prev => prev.slice(1));
+    setTimeout(() => {
+      isChecklistUndoingRedoing.current = false;
+    }, 50);
+  };
+
+  // --- HISTORY MANAGER FOR DEAL CALCULATOR ---
+  interface CalculatorState {
+    activeModel: "wholesale" | "revshare" | "capsule";
+    volume: number;
+    retailPrice: number;
+    cogsPercent: number;
+    discountPercent: number;
+    marketingCost: number;
+  }
+
+  const [calcPast, setCalcPast] = useState<CalculatorState[]>([]);
+  const [calcFuture, setCalcFuture] = useState<CalculatorState[]>([]);
+  const isCalcUndoingRedoing = React.useRef(false);
+  const lastSavedCalcState = React.useRef<CalculatorState | null>(null);
+
+  useEffect(() => {
+    if (isCalcUndoingRedoing.current) return;
+    const currentState: CalculatorState = {
+      activeModel,
+      volume,
+      retailPrice,
+      cogsPercent,
+      discountPercent,
+      marketingCost
+    };
+    if (!lastSavedCalcState.current) {
+      lastSavedCalcState.current = currentState;
+      return;
+    }
+    if (
+      lastSavedCalcState.current.activeModel === activeModel &&
+      lastSavedCalcState.current.volume === volume &&
+      lastSavedCalcState.current.retailPrice === retailPrice &&
+      lastSavedCalcState.current.cogsPercent === cogsPercent &&
+      lastSavedCalcState.current.discountPercent === discountPercent &&
+      lastSavedCalcState.current.marketingCost === marketingCost
+    ) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      setCalcPast(prev => {
+        if (prev.length > 0) {
+          const last = prev[prev.length - 1];
+          if (
+            last.activeModel === lastSavedCalcState.current?.activeModel &&
+            last.volume === lastSavedCalcState.current?.volume &&
+            last.retailPrice === lastSavedCalcState.current?.retailPrice &&
+            last.cogsPercent === lastSavedCalcState.current?.cogsPercent &&
+            last.discountPercent === lastSavedCalcState.current?.discountPercent &&
+            last.marketingCost === lastSavedCalcState.current?.marketingCost
+          ) {
+            return prev;
+          }
+        }
+        return [...prev.slice(-29), lastSavedCalcState.current!];
+      });
+      setCalcFuture([]);
+      lastSavedCalcState.current = currentState;
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [activeModel, volume, retailPrice, cogsPercent, discountPercent, marketingCost]);
+
+  const handleCalcUndo = () => {
+    if (calcPast.length === 0) return;
+    isCalcUndoingRedoing.current = true;
+    const current: CalculatorState = {
+      activeModel,
+      volume,
+      retailPrice,
+      cogsPercent,
+      discountPercent,
+      marketingCost
+    };
+    const previous = calcPast[calcPast.length - 1];
+    setActiveModel(previous.activeModel);
+    setVolume(previous.volume);
+    setRetailPrice(previous.retailPrice);
+    setCogsPercent(previous.cogsPercent);
+    setDiscountPercent(previous.discountPercent);
+    setMarketingCost(previous.marketingCost);
+    setCalcFuture(prev => [current, ...prev]);
+    setCalcPast(prev => prev.slice(0, -1));
+    lastSavedCalcState.current = previous;
+    setTimeout(() => {
+      isCalcUndoingRedoing.current = false;
+    }, 100);
+  };
+
+  const handleCalcRedo = () => {
+    if (calcFuture.length === 0) return;
+    isCalcUndoingRedoing.current = true;
+    const current: CalculatorState = {
+      activeModel,
+      volume,
+      retailPrice,
+      cogsPercent,
+      discountPercent,
+      marketingCost
+    };
+    const next = calcFuture[0];
+    setActiveModel(next.activeModel);
+    setVolume(next.volume);
+    setRetailPrice(next.retailPrice);
+    setCogsPercent(next.cogsPercent);
+    setDiscountPercent(next.discountPercent);
+    setMarketingCost(next.marketingCost);
+    setCalcPast(prev => [...prev, current]);
+    setCalcFuture(prev => prev.slice(1));
+    lastSavedCalcState.current = next;
+    setTimeout(() => {
+      isCalcUndoingRedoing.current = false;
+    }, 100);
+  };
 
   // trigger notification helper definition
   const triggerNotification = (
@@ -369,6 +533,16 @@ export default function App() {
 
   const clearanceScore = totalPossibleWeight > 0 ? Math.round((currentPassedWeight / totalPossibleWeight) * 100) : 0;
 
+  // Calculate 90-day progress percentage based on all sub-tasks in timeline phases
+  const totalTimelineTasks = timelinePhases.reduce((acc, phase) => acc + phase.tasks.length, 0);
+  const completedTimelineTasks = timelinePhases.reduce(
+    (acc, phase) => acc + phase.tasks.filter(task => task.completed).length,
+    0
+  );
+  const overallTimelineProgress = totalTimelineTasks > 0 
+    ? Math.round((completedTimelineTasks / totalTimelineTasks) * 100) 
+    : 0;
+
   return (
     <div className="min-h-screen bg-stone-50 text-stone-800 selection:bg-amber-100 selection:text-stone-900 font-sans" id="app-root">
       
@@ -386,6 +560,39 @@ export default function App() {
         setNotifications={setNotifications}
         triggerNotification={triggerNotification}
       />
+
+      {/* OVERALL 90-DAY PROJECT ROADMAP PROGRESS BAR */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-5" id="project-overall-progress">
+        <div className="bg-white border border-stone-200/60 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-5 shadow-xs animate-fade-in">
+          <div className="flex items-center gap-3.5 w-full md:w-auto self-start md:self-center">
+            <div className="p-3 bg-amber-50 border border-amber-100 text-amber-700 rounded-xl shrink-0">
+              <ShieldCheck className="w-5 h-5 text-amber-500 animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono uppercase tracking-[0.12em] text-stone-500 font-extrabold">Lộ Trình Tác Chiến Giai Đoạn Pilot</span>
+                <span className="text-[9px] bg-emerald-50 border border-emerald-200/40 text-emerald-800 font-mono font-extrabold px-1.5 py-0.5 rounded tracking-wide uppercase">90 Ngày</span>
+              </div>
+              <h4 className="text-sm font-bold text-stone-900 mt-1">Tiến độ hợp tác Fugalo x Dans la Peau</h4>
+            </div>
+          </div>
+
+          <div className="flex-1 w-full max-w-lg space-y-2">
+            <div className="flex justify-between items-center text-xs">
+              <span className="text-stone-600 font-medium font-sans">Tỷ lệ hoàn thành nhiệm vụ</span>
+              <span className="font-mono text-amber-600 font-extrabold text-sm">
+                {overallTimelineProgress}% <span className="text-stone-400 font-sans font-normal">({completedTimelineTasks}/{totalTimelineTasks} nhiệm vụ)</span>
+              </span>
+            </div>
+            <div className="w-full bg-stone-100 h-2.5 rounded-full overflow-hidden border border-stone-200/30">
+              <div 
+                className="h-full bg-gradient-to-r from-amber-500 to-amber-600 transition-all duration-500"
+                style={{ width: `${overallTimelineProgress}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-24 sm:py-10 space-y-12">
         
@@ -410,8 +617,12 @@ export default function App() {
             {activeTab === "due-diligence" && (
               <DueDiligenceSection 
                 items={checklistItems} 
-                setItems={setChecklistItems} 
+                setItems={updateChecklistWithHistory} 
                 clearanceScore={clearanceScore} 
+                onUndo={handleChecklistUndo}
+                onRedo={handleChecklistRedo}
+                canUndo={checklistPast.length > 0}
+                canRedo={checklistFuture.length > 0}
               />
             )}
             
@@ -436,6 +647,10 @@ export default function App() {
                 setDiscountPercent={setDiscountPercent}
                 marketingCost={marketingCost}
                 setMarketingCost={setMarketingCost}
+                onUndo={handleCalcUndo}
+                onRedo={handleCalcRedo}
+                canUndo={calcPast.length > 0}
+                canRedo={calcFuture.length > 0}
               />
             )}
 
@@ -447,6 +662,16 @@ export default function App() {
               <KPITracker 
                 kpis={kpiTargets} 
                 setKpis={setKpiTargets} 
+              />
+            )}
+
+            {activeTab === "admin" && (
+              <AdminCockpit 
+                notifications={notifications}
+                setNotifications={setNotifications}
+                triggerNotification={triggerNotification}
+                checklistItems={checklistItems}
+                setChecklistItems={updateChecklistWithHistory}
               />
             )}
           </div>
@@ -488,8 +713,12 @@ export default function App() {
               </div>
               <DueDiligenceSection 
                 items={checklistItems} 
-                setItems={setChecklistItems} 
+                setItems={updateChecklistWithHistory} 
                 clearanceScore={clearanceScore} 
+                onUndo={handleChecklistUndo}
+                onRedo={handleChecklistRedo}
+                canUndo={checklistPast.length > 0}
+                canRedo={checklistFuture.length > 0}
               />
             </div>
 
@@ -524,6 +753,10 @@ export default function App() {
                 setDiscountPercent={setDiscountPercent}
                 marketingCost={marketingCost}
                 setMarketingCost={setMarketingCost}
+                onUndo={handleCalcUndo}
+                onRedo={handleCalcRedo}
+                canUndo={calcPast.length > 0}
+                canRedo={calcFuture.length > 0}
               />
             </div>
 
@@ -545,6 +778,21 @@ export default function App() {
               <KPITracker 
                 kpis={kpiTargets} 
                 setKpis={setKpiTargets} 
+              />
+            </div>
+
+            {/* Admin Cockpit section */}
+            <div id="admin-section" className="space-y-4 pt-10 border-t border-stone-200">
+              <div className="flex items-center gap-2 pb-2">
+                <span className="text-[10px] bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-mono font-bold text-amber-700">PHẦN 8</span>
+                <span className="text-xs text-stone-500 font-sans uppercase tracking-widest font-bold">Cổng Quản Trị Viên & Hộp Điều Khiển FCM Live (PWA Controls)</span>
+              </div>
+              <AdminCockpit 
+                notifications={notifications}
+                setNotifications={setNotifications}
+                triggerNotification={triggerNotification}
+                checklistItems={checklistItems}
+                setChecklistItems={updateChecklistWithHistory}
               />
             </div>
           </div>
@@ -587,14 +835,49 @@ export default function App() {
       </main>
 
       {/* FOOTER */}
-      <footer className="border-t border-stone-200 bg-stone-100 pt-8 pb-28 md:py-8 text-center text-xs text-stone-600 font-sans" id="app-footer">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-2">
-          <p>
-            Hệ thống Bản quyền © 2026 <span className="text-stone-800 font-semibold font-serif">Fugalo Co., Ltd</span>. Mọi quyền nội dung được bảo lưu.
-          </p>
-          <p className="text-[10px] text-stone-500">
-            Ứng dựng thẩm định rủi ro và mô phỏng tài chính liên thông phục vụ khảo sát sáp nhập nội bộ. Đảm bảo an ninh dữ liệu.
-          </p>
+      <footer className="border-t border-stone-200 bg-stone-100 pt-8 pb-28 md:py-8 text-xs text-stone-600 font-sans animate-fade-in" id="app-footer">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+            
+            {/* Left side: System / disclaimer info */}
+            <div className="max-w-md text-center md:text-left space-y-1">
+              <p className="font-semibold text-stone-800">
+                Fugalo x Dans la Peau Portal
+              </p>
+              <p className="text-[10px] text-stone-500 leading-relaxed">
+                Ứng dụng thẩm định rủi ro và mô phỏng tài chính liên thông phục vụ khảo sát sáp nhập nội bộ. Đảm bảo an ninh dữ liệu.
+              </p>
+            </div>
+
+            {/* Right side: Copyright & under it the Admin trigger */}
+            <div className="flex flex-col items-center md:items-end gap-1.5 md:text-right mt-2 md:mt-0">
+              <p className="text-stone-750 font-medium">
+                Hệ thống Bản quyền © 2026 <span className="text-stone-900 font-semibold font-serif animate-pulse">Fugalo Co., Ltd</span>. Mọi quyền được bảo lưu.
+              </p>
+              
+              <button
+                onClick={() => {
+                  if (viewMode === "tabbed") {
+                    setActiveTab("admin");
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  } else {
+                    // Smooth scroll down to the bottom admin section
+                    const element = document.getElementById("admin-section");
+                    if (element) {
+                      element.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
+                  }
+                }}
+                className="group inline-flex items-center gap-1.5 text-[10px] md:text-xs font-sans font-medium tracking-wide text-stone-400 hover:text-amber-600 transition-colors cursor-pointer"
+                id="footer-admin-trigger"
+                title="Bảng Điều Hành Admin & PWA Controls"
+              >
+                <Settings className="w-3.5 h-3.5 text-stone-400 group-hover:text-amber-600 group-hover:rotate-45 transition-transform duration-300" />
+                <span>Cổng Quản Trị Hệ Thống</span>
+              </button>
+            </div>
+
+          </div>
         </div>
       </footer>
 

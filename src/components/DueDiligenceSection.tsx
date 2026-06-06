@@ -10,7 +10,7 @@ import {
   FileText, Shield, HelpCircle, Landmark, CheckSquare, 
   AlertTriangle, Filter, MessageSquare, AlertCircle, RefreshCw, XOctagon,
   FolderOpen, Briefcase, Coins, ShieldCheck, Info, ChevronRight, Check, ShieldAlert,
-  Download
+  Download, Sparkles, Undo, Redo
 } from "lucide-react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
@@ -20,9 +20,21 @@ interface DueDiligenceSectionProps {
   items: DueDiligenceItem[];
   setItems: React.Dispatch<React.SetStateAction<DueDiligenceItem[]>>;
   clearanceScore: number;
+  onUndo?: () => void;
+  onRedo?: () => void;
+  canUndo?: boolean;
+  canRedo?: boolean;
 }
 
-export default function DueDiligenceSection({ items, setItems, clearanceScore }: DueDiligenceSectionProps) {
+export default function DueDiligenceSection({ 
+  items, 
+  setItems, 
+  clearanceScore,
+  onUndo,
+  onRedo,
+  canUndo = false,
+  canRedo = false
+}: DueDiligenceSectionProps) {
   const [subTab, setSubTab] = useState<"checklist" | "dataroom" | "advisors">("checklist");
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>("all");
   const [activeRiskFilter, setActiveRiskFilter] = useState<string>("all");
@@ -32,6 +44,89 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
   // Data room states
   const [selectedFolderId, setSelectedFolderId] = useState<string>("dr-corporate");
   const [checkedDocuments, setCheckedDocuments] = useState<string[]>([]);
+
+  // AI Risk Insight states and custom styling parser helper methods
+  const [aiInsight, setAiInsight] = useState<string>(() => {
+    try {
+      const cached = localStorage.getItem("fugalo_ai_insight_cache");
+      return cached || "";
+    } catch (_) {
+      return "";
+    }
+  });
+  const [loadingInsight, setLoadingInsight] = useState<boolean>(false);
+  const [errorInsight, setErrorInsight] = useState<string>("");
+
+  const handleFetchAiInsight = async () => {
+    setLoadingInsight(true);
+    setErrorInsight("");
+    try {
+      const response = await fetch("/api/ai-risk-insight", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items }),
+      });
+      if (!response.ok) {
+        throw new Error("Lỗi máy chủ khi lấy dữ liệu phân tích từ Gemini API.");
+      }
+      const data = await response.json();
+      setAiInsight(data.insight);
+      try {
+        localStorage.setItem("fugalo_ai_insight_cache", data.insight);
+      } catch (_) {}
+    } catch (err: any) {
+      setErrorInsight(err.message || "Không thể kết nối với máy chủ AI.");
+    } finally {
+      setLoadingInsight(false);
+    }
+  };
+
+  const renderBoldText = (text: string) => {
+    const parts = text.split(/\*\*([^*]+)\*\*/g);
+    return parts.map((part, index) => {
+      if (index % 2 === 1) {
+        return <strong key={index} className="font-extrabold text-amber-700">{part}</strong>;
+      }
+      return part;
+    });
+  };
+
+  const renderMarkdown = (text: string) => {
+    if (!text) return null;
+    const paragraphs = text.split("\n");
+    return (
+      <div className="space-y-3.5 text-stone-700 text-xs font-sans font-medium leading-relaxed">
+        {paragraphs.map((para, pIdx) => {
+          let line = para.trim();
+          if (!line) return null;
+          
+          // Headings ###
+          if (line.startsWith("###")) {
+            return (
+              <h4 key={pIdx} className="text-sm font-bold text-amber-850 font-serif pt-3.5 pb-1.5 border-b border-amber-200 mt-5 first:mt-0 flex items-center gap-1.5">
+                <span className="w-1.5 h-3 bg-amber-600 rounded-sm" />
+                {line.replace(/^###\s*/, "")}
+              </h4>
+            );
+          }
+          
+          // Bullet points - or *
+          if (line.startsWith("- ") || line.startsWith("* ")) {
+            const cleanText = line.replace(/^[\-\*]\s*/, "");
+            return (
+              <div key={pIdx} className="flex items-start gap-2 pl-2">
+                <span className="text-amber-600 font-bold mt-1 shrink-0">•</span>
+                <span>{renderBoldText(cleanText)}</span>
+              </div>
+            );
+          }
+          
+          // Normal paragraph
+          return <p key={pIdx}>{renderBoldText(line)}</p>;
+        })}
+      </div>
+    );
+  };
 
   const toggleDocumentCheck = (docText: string) => {
     setCheckedDocuments(prev => 
@@ -219,6 +314,30 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2.5 shrink-0 self-start sm:self-center">
+            {onUndo && (
+              <button
+                onClick={onUndo}
+                disabled={!canUndo}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-stone-50 hover:bg-stone-100 disabled:opacity-40 disabled:hover:bg-stone-50 border border-stone-200 hover:border-stone-300 disabled:border-stone-200 text-stone-700 hover:text-stone-900 rounded-lg text-xs font-semibold cursor-pointer disabled:cursor-not-allowed transition-colors shadow-sm"
+                title="Hoàn tác chỉnh sửa thẩm định gần đây nhất"
+                id="due-diligence-undo-btn"
+              >
+                <Undo className="w-3.5 h-3.5" />
+                <span>Hoàn tác</span>
+              </button>
+            )}
+            {onRedo && (
+              <button
+                onClick={onRedo}
+                disabled={!canRedo}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-stone-50 hover:bg-stone-100 disabled:opacity-40 disabled:hover:bg-stone-50 border border-stone-200 hover:border-stone-300 disabled:border-stone-200 text-stone-700 hover:text-stone-900 rounded-lg text-xs font-semibold cursor-pointer disabled:cursor-not-allowed transition-colors shadow-sm"
+                title="Làm lại thao tác vừa hoàn tác"
+                id="due-diligence-redo-btn"
+              >
+                <Redo className="w-3.5 h-3.5" />
+                <span>Làm lại</span>
+              </button>
+            )}
             <button 
               onClick={handleExportCSV}
               className="flex items-center gap-2 px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold cursor-pointer transition-colors shadow-sm animate-fade-in animate-duration-150"
@@ -369,39 +488,39 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
       </div>
 
       {/* 3. MULTI-LEVEL SUBTABS SYSTEM */}
-      <div className="flex flex-wrap gap-2 border-b border-stone-200 pb-2.5">
+      <div className="bg-stone-100/80 p-1 rounded-xl flex flex-wrap sm:flex-nowrap gap-1 max-w-2xl select-none">
         <button
           onClick={() => setSubTab("checklist")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-lg cursor-pointer transition-all border ${
+          className={`flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-lg cursor-pointer transition-all flex-1 text-center whitespace-nowrap ${
             subTab === "checklist"
-              ? "bg-amber-600 text-white border-amber-600 shadow-sm font-extrabold"
-              : "bg-white text-stone-600 border-stone-200 hover:bg-stone-50 hover:text-stone-900"
+              ? "bg-white text-stone-900 shadow-xs border border-stone-200/20"
+              : "text-stone-600 hover:text-stone-900 active:bg-stone-50/50"
           }`}
         >
-          <CheckSquare className="w-4 h-4" />
+          <CheckSquare className="w-3.5 h-3.5 text-amber-600" />
           <span>1. Tiêu chuẩn Hiện trường ({items.length})</span>
         </button>
         <button
           onClick={() => setSubTab("dataroom")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-lg cursor-pointer transition-all border ${
+          className={`flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-lg cursor-pointer transition-all flex-1 text-center whitespace-nowrap ${
             subTab === "dataroom"
-              ? "bg-amber-600 text-white border-amber-600 shadow-sm font-extrabold"
-              : "bg-white text-stone-600 border-stone-200 hover:bg-stone-50 hover:text-stone-900"
+              ? "bg-white text-stone-900 shadow-xs border border-stone-200/20"
+              : "text-stone-600 hover:text-stone-900 active:bg-stone-50/50"
           }`}
         >
-          <FolderOpen className="w-4 h-4" />
-          <span>2. Hồ sơ Data Room cần yêu cầu ({DATA_ROOM_FOLDERS.length})</span>
+          <FolderOpen className="w-3.5 h-3.5 text-amber-600" />
+          <span>2. Hồ sơ Data Room ({DATA_ROOM_FOLDERS.length})</span>
         </button>
         <button
           onClick={() => setSubTab("advisors")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-lg cursor-pointer transition-all border ${
+          className={`flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-lg cursor-pointer transition-all flex-1 text-center whitespace-nowrap ${
             subTab === "advisors"
-              ? "bg-amber-600 text-white border-amber-600 shadow-sm font-extrabold"
-              : "bg-white text-stone-600 border-stone-200 hover:bg-stone-50 hover:text-stone-900"
+              ? "bg-white text-stone-900 shadow-xs border border-stone-200/20"
+              : "text-stone-600 hover:text-stone-900 active:bg-stone-50/50"
           }`}
         >
-          <ShieldCheck className="w-4 h-4" />
-          <span>3. Đội ngũ Cố vấn khuyên thuê ({ADVISORY_TEAM.length})</span>
+          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+          <span>3. Cố vấn Khuyên thuê ({ADVISORY_TEAM.length})</span>
         </button>
       </div>
 
@@ -766,6 +885,60 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
           </div>
         </div>
       )}
+
+      {/* 4. AI RISK INSIGHT MODULE */}
+      <div className="bg-gradient-to-br from-amber-50 to-stone-100 border border-amber-200/80 rounded-xl p-6 shadow-sm space-y-4" id="ai-risk-insight-panel">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-amber-200/50 pb-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-1.5 text-xs font-mono text-amber-700 uppercase tracking-widest font-extrabold">
+              <Sparkles className="w-4 h-4 text-amber-600 animate-pulse" />
+              <span>AI-Powered Risk Analysis Engine</span>
+            </div>
+            <h3 className="text-base font-serif font-bold text-stone-900">
+              Trí Tuệ Nhân Tạo (Gemini) - Phân Tích Rủi Ro & Đề Xuất Giải Pháp
+            </h3>
+            <p className="text-xs text-stone-600 font-semibold font-sans">
+              Tự động phân tích các hạng mục đánh giá đỏ rỉ hoặc chưa hoàn thiện, tìm kiếm phương pháp tối ưu đàm phán sáp nhập phục vụ cố vấn.
+            </p>
+          </div>
+          <button
+            onClick={handleFetchAiInsight}
+            disabled={loadingInsight}
+            className="flex items-center gap-2 px-4.5 py-3 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-450 disabled:from-amber-300 disabled:to-amber-200 text-white font-bold rounded-lg text-xs transition-all shadow-md hover:shadow-lg cursor-pointer shrink-0 disabled:cursor-not-allowed"
+          >
+            {loadingInsight ? (
+              <>
+                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                <span>Đang phân tích...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>{aiInsight ? "Cập Nhật Phân Tích AI" : "Kích Hoạt AI Risk Insight"}</span>
+              </>
+            )}
+          </button>
+        </div>
+
+        {errorInsight && (
+          <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-lg flex items-center gap-2 font-semibold">
+            <XOctagon className="w-4 h-4 text-rose-600 shrink-0" />
+            <span>Có lỗi phát sinh: {errorInsight}</span>
+          </div>
+        )}
+
+        {aiInsight ? (
+          <div className="bg-white/95 border border-amber-200/40 rounded-lg p-5 shadow-inner">
+            {renderMarkdown(aiInsight)}
+          </div>
+        ) : (
+          !loadingInsight && (
+            <div className="p-8 text-center text-xs text-stone-500 font-semibold font-sans italic">
+              Nhấn nút "Kích Hoạt AI Risk Insight" để hệ thống tự động tập hợp các dấu hiệu rủi ro chưa rõ/bất thường gửi sang Gemini phân tích đàm phán.
+            </div>
+          )
+        )}
+      </div>
 
     </div>
   );

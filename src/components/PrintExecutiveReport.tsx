@@ -4,10 +4,13 @@
  */
 
 import React, { useState } from "react";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 import { DueDiligenceItem, TimelinePhase, KPITargetItem } from "../types";
 import { 
   Printer, ArrowLeft, Check, Copy, FileText, Sliders, 
-  MapPin, Landmark, Calendar, ShieldCheck, Percent, HelpCircle 
+  MapPin, Landmark, Calendar, ShieldCheck, Percent, HelpCircle,
+  Download, RefreshCw
 } from "lucide-react";
 import { FugaloBrand } from "./FugaloLogo";
 
@@ -111,6 +114,59 @@ export default function PrintExecutiveReport({
 
   const formatVND = (num: number) => {
     return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(num);
+  };
+
+  const [exportingPdf, setExportingPdf] = useState(false);
+
+  const handleExportPDF = async () => {
+    setExportingPdf(true);
+    try {
+      const container = document.getElementById("print-document-container");
+      if (!container) {
+        throw new Error("Không thể tìm thấy khung tài liệu báo cáo để trích xuất.");
+      }
+
+      // Query all page elements. Pages are styled dynamically as .print-a4-page
+      const pages = Array.from(container.getElementsByClassName("print-a4-page")) as HTMLElement[];
+      if (pages.length === 0) {
+        throw new Error("Không phát hiện trang A4 nội dung nào hợp lệ.");
+      }
+
+      // Initialize jsPDF with A4 size
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+      });
+
+      for (let i = 0; i < pages.length; i++) {
+        const page = pages[i];
+        
+        // Render html element to canvas using html2canvas
+        const canvas = await html2canvas(page, {
+          scale: 2, // Ultra high-quality density
+          useCORS: true,
+          logging: false,
+          allowTaint: true,
+          backgroundColor: "#ffffff"
+        });
+
+        const imgData = canvas.toDataURL("image/jpeg", 0.95);
+
+        if (i > 0) {
+          pdf.addPage();
+        }
+
+        pdf.addImage(imgData, "JPEG", 0, 0, 210, 297);
+      }
+
+      pdf.save(`fugalo_bao_cao_dac_ta_m&a_${new Date().toISOString().slice(0, 10)}.pdf`);
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || "Đã xảy ra lỗi khi tạo tệp PDF.");
+    } finally {
+      setExportingPdf(false);
+    }
   };
 
   const handlePrint = () => {
@@ -439,11 +495,29 @@ export default function PrintExecutiveReport({
         {/* PRINT ACTIONS */}
         <div className="space-y-3 pt-4 border-t border-stone-100 font-sans">
           <button
-            onClick={handlePrint}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white font-extrabold rounded-lg text-sm cursor-pointer shadow-md hover:shadow-lg transition-all"
+            onClick={handleExportPDF}
+            disabled={exportingPdf}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-emerald-700 to-emerald-600 hover:from-emerald-600 hover:to-emerald-500 text-white font-extrabold rounded-lg text-sm cursor-pointer shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Printer className="w-4 h-4" />
-            <span>Mở Hộp Thoại In (Lưu PDF)</span>
+            {exportingPdf ? (
+              <>
+                <RefreshCw className="w-4 h-4 animate-spin" />
+                <span>Đang kết xuất PDF chuyên nghiệp...</span>
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4" />
+                <span>Xuất PDF Báo Cáo Cao Cấp</span>
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={handlePrint}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-amber-200 bg-amber-50 hover:bg-amber-100/50 text-amber-800 font-bold rounded-lg text-xs cursor-pointer transition-colors"
+          >
+            <Printer className="w-3.5 h-3.5" />
+            <span>Mở Hộp Thoại In trình duyệt</span>
           </button>
           
           <button

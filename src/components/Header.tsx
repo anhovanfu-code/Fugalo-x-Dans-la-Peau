@@ -110,11 +110,12 @@ export default function Header({
   ];
 
   return (
-    <header className="bg-white border-b border-stone-200 sticky top-0 z-50 shadow-md overflow-hidden" id="app-header">
+    <>
+      <header className="bg-white/95 backdrop-blur-md border-b border-stone-200/80 sticky top-0 z-50 shadow-[0_1px_3px_rgba(41,37,36,0.04)] overflow-hidden" id="app-header">
       {/* Decorative luxury terracotta brand line */}
       <div className="h-[3px] bg-gradient-to-r from-amber-800 via-amber-500 to-amber-600 w-full" />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 md:py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-1.5 md:gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 md:py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-1.5 md:gap-4">
         {/* Logos & Branding styled precisely from the official uploaded logo */}
         <div className="flex items-center justify-between md:justify-start gap-3 w-full md:w-auto">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 sm:flex-initial">
@@ -122,22 +123,22 @@ export default function Header({
             
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-x-1 sm:gap-x-2 gap-y-0.5">
-                <h1 className="text-xs sm:text-lg font-serif font-semibold text-stone-900 tracking-wide flex items-center gap-1 select-none whitespace-nowrap min-w-0">
-                  <span className="tracking-[0.05em] sm:tracking-[0.18em] font-serif font-extrabold text-[#db5129] uppercase text-[11px] sm:text-base whitespace-nowrap">FUGALO</span> 
-                  <span className="text-stone-400 font-sans text-[9px] sm:text-xs select-none">×</span> 
-                  <span className="text-stone-700 font-serif font-light text-[11px] sm:text-base tracking-wider whitespace-nowrap">Dans la Peau</span>
+                <h1 className="text-xs sm:text-lg font-serif font-semibold text-stone-900 tracking-wide flex items-center gap-1.5 select-none whitespace-nowrap min-w-0">
+                  <span className="tracking-[0.12em] font-serif font-black text-amber-600 uppercase text-[12px] sm:text-lg whitespace-nowrap">FUGALO</span> 
+                  <span className="text-stone-350 font-sans text-[9px] sm:text-xs select-none">×</span> 
+                  <span className="text-stone-800 font-serif font-light text-[12px] sm:text-lg tracking-wide whitespace-nowrap">Dans la Peau</span>
                 </h1>
-                <span className="inline-block px-1 py-0.2 sm:px-1.5 sm:py-0.5 bg-amber-50 text-amber-700 text-[6px] sm:text-[8px] uppercase tracking-widest font-mono border border-amber-200/50 rounded font-bold shrink-0">
+                <span className="inline-block px-1.5 py-0.5 bg-amber-50 text-amber-700 text-[6px] sm:text-[8px] uppercase tracking-widest font-mono border border-amber-200/50 rounded font-extrabold shrink-0">
                   M&A
                 </span>
               </div>
               <p className="text-stone-600 font-serif italic tracking-wider mt-0.5 flex flex-wrap items-center gap-1 text-[8px] sm:text-xs min-w-0">
-                <span className="text-[#db5129] font-serif not-italic tracking-[0.1em] sm:tracking-[0.25em] font-extrabold text-[7.5px] sm:text-[9px] pr-1 whitespace-nowrap">
+                <span className="text-amber-600 font-sans not-italic tracking-[0.15em] sm:tracking-[0.25em] font-extrabold text-[7.5px] sm:text-[9px] pr-1 whitespace-nowrap">
                   TÁI SINH GIÁ TRỊ
                 </span>
-                <span className="w-1 h-1 rounded-full bg-stone-300 hidden sm:inline" />
-                <span className="text-stone-500 font-sans not-italic text-[8.5px] sm:text-[11px] font-normal hidden md:inline truncate">
-                  Nền tảng kiểm định sáp nhập, chuỗi cung ứng và hoạch định chuỗi TP. Hồ Chí Minh
+                <span className="w-1.5 h-1.5 rounded-full bg-stone-300 hidden sm:inline" />
+                <span className="text-stone-500 font-sans not-italic text-[8.5px] sm:text-[11px] font-medium hidden md:inline truncate">
+                  Nền tảng kiểm định sáp nhập, chuỗi cung ứng và hoạch định chiến dịch
                 </span>
               </p>
             </div>
@@ -182,38 +183,38 @@ export default function Header({
               )}
             </button>
 
-            {/* Layout switcher (Hidden on Mobile, Visible on Tablet-up sm:flex) */}
+            {/* Layout switcher - Now fully visible on both Mobile and Desktop/Tablet */}
             {viewMode && setViewMode && (
-              <div className="hidden sm:flex items-center bg-stone-100/95 border border-stone-200/60 p-0.5 rounded-md select-none shrink-0" title="Đổi giao diện bố cục">
+              <div className="flex items-center bg-stone-100 border border-stone-200/80 p-0.5 rounded-lg select-none shrink-0" title="Đổi giao diện bố cục">
                 <button
                   onClick={() => setViewMode("tabbed")}
-                  className={`p-1 rounded-sm transition-all cursor-pointer ${
+                  className={`p-1 rounded-md transition-all cursor-pointer ${
                     viewMode === "tabbed"
-                      ? "bg-amber-600 text-white shadow-xs"
-                      : "text-stone-500 active:bg-white"
+                      ? "bg-[#db5129] text-white shadow-xs"
+                      : "text-stone-500 hover:text-stone-800 active:bg-white"
                   }`}
                   title="Giao diện App: Xem từng Tab"
                 >
-                  <Layout className="w-3 h-3" />
+                  <Layout className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => setViewMode("full")}
-                  className={`p-1 rounded-sm transition-all cursor-pointer ${
+                  className={`p-1 rounded-md transition-all cursor-pointer ${
                     viewMode === "full"
-                      ? "bg-amber-600 text-white shadow-xs"
-                      : "text-stone-500 active:bg-white"
+                      ? "bg-[#db5129] text-white shadow-xs"
+                      : "text-stone-500 hover:text-stone-800 active:bg-white"
                   }`}
                   title="Giao diện Cuộn: Xem tràn trang"
                 >
-                  <Layers className="w-3 h-3" />
+                  <Layers className="w-3.5 h-3.5" />
                 </button>
               </div>
             )}
 
-            {/* Print button (Hidden on Mobile, Visible on Tablet-up sm:block) */}
+            {/* Print button - Now fully visible on both Mobile and Desktop/Tablet */}
             <button
               onClick={onPrintClick}
-              className="hidden sm:block p-1.5 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white rounded shadow-xs shrink-0 transition-colors"
+              className="p-1.5 bg-[#db5129] hover:bg-[#c4431e] active:bg-[#aa3616] text-white rounded-lg shadow-xs shrink-0 transition-colors"
               title="Xuất Báo Cáo VIP"
             >
               <Printer className="w-3.5 h-3.5" />
@@ -323,6 +324,45 @@ export default function Header({
         </div>
       </div>
 
+        {/* Tabs Menu navigation - Desktop and Tablet scroll */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-stone-100/80 mt-1 sm:mt-0 hidden md:block">
+          <nav className="flex overflow-x-auto no-scrollbar scroll-smooth md:flex-wrap gap-x-6 gap-y-1 select-none" aria-label="Tabs">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`flex items-center gap-2 py-3.5 px-0.5 font-bold text-xs sm:text-[13.5px] transition-all duration-200 cursor-pointer shrink-0 relative ${
+                    isActive
+                      ? "text-amber-600"
+                      : "text-stone-600 hover:text-stone-950"
+                  }`}
+                  id={`tab-btn-${item.id}`}
+                >
+                  <Icon className={`w-4 h-4 transition-transform duration-200 ${isActive ? "text-amber-600 scale-105" : "text-stone-400"}`} />
+                  <span>{item.label}</span>
+                  {item.id === "due-diligence" && (
+                    <span className={`ml-1.5 px-2 py-0.5 rounded-full text-[9.5px] font-mono font-extrabold shadow-xs ${
+                      isActive 
+                        ? "bg-amber-100 text-amber-850" 
+                        : "bg-emerald-50 text-emerald-700 border border-emerald-250/20"
+                    }`}>
+                      {item.badge}
+                    </span>
+                  )}
+                  {/* Sleek bottom underline indicator with micro-transition */}
+                  {isActive && (
+                    <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-amber-600 rounded-t-full" />
+                  )}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+      </header>
+
       {/* DETAILED DIALOG: NOTIFICATION HUB & SYNC SIMULATOR OVERLAY */}
       {isNotifOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-xs transition-opacity overflow-y-auto">
@@ -419,7 +459,7 @@ export default function Header({
                       )}
                       <button
                         onClick={clearAllNotifications}
-                        className="flex-1 sm:flex-none justify-center flex items-center gap-1 px-2.5 py-1.5 border border-stone-200 hover:bg-rose-50 hover:text-rose-700 text-[11px] font-bold text-stone-500 cursor-pointer rounded-lg transition-all"
+                        className="flex-1 sm:flex-none justify-center flex items-center gap-1 px-2.5 py-1.5 border border-stone-205 hover:bg-rose-50 hover:text-rose-700 text-[11px] font-bold text-stone-500 cursor-pointer rounded-lg transition-all"
                       >
                         <Trash2 className="w-3 h-3" />
                         <span>Xóa lịch sử</span>
@@ -471,7 +511,7 @@ export default function Header({
                                   {new Date(notif.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </span>
                               </div>
-                              <p className="text-stone-600 text-[11px] leading-relaxed">{notif.body}</p>
+                              <p className="text-stone-605 text-[11px] leading-relaxed">{notif.body}</p>
                               
                               {notif.actionTab && (
                                 <button
@@ -510,7 +550,7 @@ export default function Header({
                       <span>Rà Soát Toàn Hệ Thống Cận Hạn Chót (&lt; 48 Giờ)</span>
                     </h5>
                     
-                    <div className="mt-2 text-[11px] text-stone-600 bg-stone-50 border border-stone-200 p-3 rounded-lg space-y-1.5 max-h-[160px] overflow-y-auto">
+                    <div className="mt-2 text-[11px] text-stone-605 bg-stone-50 border border-stone-200 p-3 rounded-lg space-y-1.5 max-h-[160px] overflow-y-auto">
                       <p className="font-medium text-stone-900">Quét rà tự động phát hiện 3 hạng mục rủi ro khẩn cấp:</p>
                       <div className="space-y-1">
                         <div className="flex justify-between items-center bg-white p-1.5 border border-stone-150 rounded">
@@ -578,15 +618,15 @@ export default function Header({
 
                     <div className="border border-stone-200 rounded-xl p-4 bg-stone-50 space-y-3">
                       <div className="flex items-center gap-2">
-                        <Smartphone className="w-4 h-4 text-stone-600" />
-                        <h4 className="text-xs font-bold text-stone-900">iOS standalone PWA wrapper</h4>
+                        <Smartphone className="w-4 h-4 text-stone-650" />
+                        <h4 className="text-xs font-bold text-stone-950">iOS standalone PWA wrapper</h4>
                       </div>
 
-                      <div className="space-y-1.5 text-xs text-stone-600 leading-relaxed font-mono text-[10px]">
+                      <div className="space-y-1.5 text-xs text-stone-605 leading-relaxed font-mono text-[10px]">
                         <div className="line-clamp-4">
-                          Device: Apple iPhone di động iOS standalone
-                          FCM Gateway APNs: Connected
-                          Bridge Token: fcm_token_fugalo_83y74dhc_2026_dev...
+                          Device: Apple iPhone di động iOS standalone<br />
+                          FCM Gateway APNs: Connected<br />
+                          Bridge Token: fcm_token_fugalo_83y74dhc_2026_dev...<br />
                           Channel: standard_ma_channel_vietnam
                         </div>
                       </div>
@@ -668,7 +708,7 @@ export default function Header({
                       </p>
                       <ul className="list-disc pl-5 space-y-1.5">
                         <li>
-                          <strong>Dạng app cài đặt (PWA / Standalone):</strong> Bạn không nhất thiết phải viết shell app quá phức tạp. Với Progressive Web App (PWA) có sẳn trong gói cấu hình của Fugalo, khi bạn nhấn nút <span className="text-white">"Thêm vào Màn hình chính"</span>, ứng dụng sẽ chạy độc lập, bỏ qua Header của Safari và có Service Worker chạy nền xử lý sự kiện.
+                          <strong>Dạng app cài đặt (PWA / Standalone):</strong> Bạn không nhất thiết phải viết shell app quá phức tạp. Với Progressive Web App (PWA) có sẳn trong gói cấu hình của Fugalo, khi bạn nhấn nút <span className="text-white hover:underline">"Thêm vào Màn hình chính"</span>, ứng dụng sẽ chạy độc lập, bỏ qua Header của Safari và có Service Worker chạy nền xử lý sự kiện.
                         </li>
                         <li>
                           <strong>Dạng native (Capacitor / Swift WebView):</strong> Nếu bạn gói ứng dụng web này trong một WebView bằng Swift Xcode (hoặc Capacitor):
@@ -702,40 +742,6 @@ export default function Header({
         </div>
       )}
 
-      {/* Tabs Menu navigation - Desktop and Tablet scroll */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-stone-100 mt-2 sm:mt-0 hidden md:block">
-        <nav className="flex overflow-x-auto no-scrollbar scroll-smooth md:flex-wrap gap-2 py-3.5 select-none" aria-label="Tabs">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-xs sm:text-[13px] transition-all duration-200 cursor-pointer shrink-0 ${
-                  isActive
-                    ? "bg-amber-600 text-white shadow-sm ring-1 ring-amber-600/20"
-                    : "bg-stone-50 text-stone-600 hover:bg-stone-100 hover:text-stone-900 border border-stone-200/80"
-                }`}
-                id={`tab-btn-${item.id}`}
-              >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? "text-white" : "text-stone-500"}`} />
-                <span>{item.label}</span>
-                {item.id === "due-diligence" && (
-                  <span className={`ml-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold ${
-                    isActive 
-                      ? "bg-amber-800 text-white" 
-                      : "bg-emerald-50 text-emerald-700 border border-emerald-250"
-                  }`}>
-                    {item.badge}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </nav>
-      </div>
-
       {/* ULTRA LUXURY MOBILE APP BOTTOM NAVIGATION DOCK */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-t border-stone-200/80 md:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.06)] pb-safe">
         <nav className="flex items-center justify-between px-1.5 py-2.5 max-w-full overflow-x-auto no-scrollbar gap-1" aria-label="Mobile Navigation">
@@ -752,6 +758,7 @@ export default function Header({
             else if (item.id === "calculator") shortLabel = "Bảng Deal";
             else if (item.id === "b2b-gifting") shortLabel = "Quà VIP";
             else if (item.id === "kpis") shortLabel = "KPIs";
+            else if (item.id === "admin") shortLabel = "Admin";
 
             return (
               <button
@@ -789,6 +796,6 @@ export default function Header({
           })}
         </nav>
       </div>
-    </header>
+    </>
   );
 }
