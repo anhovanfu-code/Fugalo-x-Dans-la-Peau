@@ -282,7 +282,7 @@ export default function App() {
       </main>
 
       {/* FOOTER */}
-      <footer className="border-t border-stone-200 bg-stone-100 py-8 text-center text-xs text-stone-600 font-sans" id="app-footer">
+      <footer className="border-t border-stone-200 bg-stone-100 pt-8 pb-28 md:py-8 text-center text-xs text-stone-600 font-sans" id="app-footer">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-2">
           <p>
             Hệ thống Bản quyền © 2026 <span className="text-stone-800 font-semibold font-serif">Fugalo Co., Ltd</span>. Mọi quyền nội dung được bảo lưu.

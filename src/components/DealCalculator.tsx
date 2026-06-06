@@ -5,6 +5,16 @@
 
 import React, { useState } from "react";
 import { DollarSign, Wallet, Percent, Volume2, Info, ArrowRight, Table } from "lucide-react";
+import { 
+  ResponsiveContainer, 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend 
+} from "recharts";
 
 interface DealCalculatorProps {
   activeModel?: "wholesale" | "revshare" | "capsule";
@@ -102,6 +112,70 @@ export default function DealCalculator({
   // Calculate Nets
   const fugaloNet = Math.round(fugaloRevenue - (activeModel === "capsule" ? 0 : fugaloCosts));
   const dlpNet = Math.round(dlpRevenue - dlpCosts);
+
+  // Dynamic model computation for charts to support visual comparing
+  const computeModelNets = (modelType: "wholesale" | "revshare" | "capsule") => {
+    const totRev = volume * retailPrice;
+    const totCogs = (cogsPercent / 100) * totRev;
+
+    let fugRev = 0;
+    let dlpRev = 0;
+    let fugCost = 0;
+    let dlpCost = 0;
+
+    if (modelType === "wholesale") {
+      const disc = activeModel === "wholesale" ? discountPercent : 45;
+      const purchaseCost = totRev * (1 - disc / 100);
+      fugRev = totRev;
+      dlpRev = purchaseCost;
+      fugCost = purchaseCost + marketingCost;
+      dlpCost = totCogs;
+    } else if (modelType === "revshare") {
+      const disc = activeModel === "revshare" ? discountPercent : 30;
+      fugRev = totRev * (disc / 100);
+      dlpRev = totRev * (1 - disc / 100);
+      fugCost = marketingCost * 0.5;
+      dlpCost = totCogs + marketingCost * 0.5;
+    } else {
+      // capsule
+      const totalIntegratedCosts = totCogs + marketingCost;
+      const netProfitPool = Math.max(0, totRev - totalIntegratedCosts);
+      fugRev = netProfitPool * 0.5;
+      dlpRev = totCogs + netProfitPool * 0.5;
+      fugCost = marketingCost * 0.5;
+      dlpCost = totCogs + marketingCost * 0.5;
+    }
+
+    const fNet = Math.round(fugRev - (modelType === "capsule" ? 0 : fugCost));
+    const dNet = Math.round(dlpRev - dlpCost);
+
+    return {
+      fNet,
+      dNet,
+      totalNet: fNet + dNet,
+    };
+  };
+
+  const chartData = [
+    {
+      name: "RevShare (Ăn chia)",
+      "Fugalo (Vàng đồng)": computeModelNets("revshare").fNet,
+      "Dans la Peau (Xám)": computeModelNets("revshare").dNet,
+      "Tổng cộng": computeModelNets("revshare").totalNet,
+    },
+    {
+      name: "Wholesale (Sỉ)",
+      "Fugalo (Vàng đồng)": computeModelNets("wholesale").fNet,
+      "Dans la Peau (Xám)": computeModelNets("wholesale").dNet,
+      "Tổng cộng": computeModelNets("wholesale").totalNet,
+    },
+    {
+      name: "Capsule (Liên hợp)",
+      "Fugalo (Vàng đồng)": computeModelNets("capsule").fNet,
+      "Dans la Peau (Xám)": computeModelNets("capsule").dNet,
+      "Tổng cộng": computeModelNets("capsule").totalNet,
+    },
+  ];
 
   // Helper formatting currency
   const formatVND = (num: number) => {
@@ -401,6 +475,56 @@ export default function DealCalculator({
                       <span className="font-mono text-stone-800 font-bold">{formatVND(activeModel === "wholesale" ? 0 : marketingCost * 0.5)}</span>
                     </li>
                   </ul>
+                </div>
+              </div>
+
+              {/* COMPARISON RECHARTS BAR CHART */}
+              <div className="border-t border-stone-200/60 pt-5 mt-6 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono text-stone-500 uppercase tracking-wider block font-bold">
+                    So sánh hiệu quả tài chính giữa 3 phương án
+                  </span>
+                  <span className="text-[9px] text-[#db5129] font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200/50 uppercase tracking-wider font-mono">
+                    Cập nhật thời gian thực
+                  </span>
+                </div>
+                
+                <div className="h-52 w-full text-xs" id="deal-models-comparison-chart">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={chartData}
+                      margin={{ top: 15, right: 10, left: -20, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f4" />
+                      <XAxis 
+                        dataKey="name" 
+                        stroke="#78716c" 
+                        fontSize={9} 
+                        fontWeight="semibold"
+                        tickLine={false} 
+                        axisLine={false}
+                      />
+                      <YAxis 
+                        stroke="#78716c" 
+                        fontSize={8} 
+                        tickLine={false}
+                        axisLine={false}
+                        tickFormatter={(val) => `${(val / 1000000).toFixed(0)}Tr`}
+                      />
+                      <Tooltip 
+                        formatter={(value: any) => [formatVND(value as number), ""]}
+                        contentStyle={{ background: "#fafaf9", border: "1px solid #e7e5e4", borderRadius: "8px", fontSize: "10.5px" }}
+                        labelStyle={{ fontWeight: "bold", color: "#1c1917" }}
+                      />
+                      <Legend 
+                        iconSize={8}
+                        iconType="circle"
+                        wrapperStyle={{ fontSize: '9.5px', paddingTop: '4px' }}
+                      />
+                      <Bar name="Lợi nhuận rọ̀ng Fugalo" dataKey="Fugalo (Vàng đồng)" fill="#db5129" radius={[4, 4, 0, 0]} />
+                      <Bar name="Lợi nhuận ròng DLP" dataKey="Dans la Peau (Xám)" fill="#78716c" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
             </div>
