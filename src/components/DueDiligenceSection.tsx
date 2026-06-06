@@ -9,7 +9,8 @@ import { ADVISORY_TEAM, DATA_ROOM_FOLDERS } from "../data";
 import { 
   FileText, Shield, HelpCircle, Landmark, CheckSquare, 
   AlertTriangle, Filter, MessageSquare, AlertCircle, RefreshCw, XOctagon,
-  FolderOpen, Briefcase, Coins, ShieldCheck, Info, ChevronRight, Check, ShieldAlert
+  FolderOpen, Briefcase, Coins, ShieldCheck, Info, ChevronRight, Check, ShieldAlert,
+  Download
 } from "lucide-react";
 
 interface DueDiligenceSectionProps {
@@ -64,6 +65,59 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
   const handleResetChecklist = () => {
     setItems(prev => prev.map(item => ({ ...item, status: "pending", notes: "" })));
     setCheckedDocuments([]);
+  };
+
+  const handleExportCSV = () => {
+    const headers = [
+      "Mã số (ID)",
+      "Danh mục thẩm định (Category)",
+      "Câu hỏi thẩm định gốc (English Question)",
+      "Câu hỏi Việt hóa (Vietnamese Question)",
+      "Trọng tâm rà soát (Audit Focus Details)",
+      "Mức độ rủi ro (Risk)",
+      "Trạng thái đánh giá (Status)",
+      "Ghi chú kiểm tra (Evaluator Notes)",
+    ];
+
+    const rows = items.map(item => {
+      const statusLabel = 
+        item.status === "passed" ? "Đạt chuẩn" :
+        item.status === "failed" ? "Bất thường" :
+        item.status === "pending" ? "Chưa rõ" : "Cần hành động";
+
+      const categoryLabel = getCategoryVietnameseLabel(item.category);
+
+      return [
+        item.id,
+        categoryLabel,
+        item.question,
+        item.vietnameseQuestion,
+        item.details,
+        item.riskLevel.toUpperCase(),
+        statusLabel,
+        item.notes || ""
+      ];
+    });
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => 
+        row.map(val => {
+          const cleaned = String(val).replace(/"/g, '""');
+          return `"${cleaned}"`;
+        }).join(",")
+      )
+    ].join("\n");
+
+    // Prepend UTF-8 BOM so Excel opens with correct encoding for Vietnamese language characters
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `fugalo_danh_muc_tham_dinh_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   // Filter items
@@ -123,13 +177,25 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
               Fugalo tuyệt đối không góp vốn hay nhận danh nghĩa đồng sáng lập khi chưa hoàn thành 100% việc kiểm nghiệm hồ sơ năng lực này.
             </p>
           </div>
-          <button 
-            onClick={handleResetChecklist}
-            className="flex items-center gap-2 px-3 py-1.5 bg-stone-50 hover:bg-stone-100 border border-stone-200 hover:border-stone-300 text-stone-700 hover:text-stone-900 rounded-lg text-xs font-semibold cursor-pointer transition-colors shadow-sm animate-fade-in animate-duration-150"
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
-            <span>Đặt lại tất cả</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0 self-start sm:self-center">
+            <button 
+              onClick={handleExportCSV}
+              className="flex items-center gap-2 px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold cursor-pointer transition-colors shadow-sm animate-fade-in animate-duration-150"
+              title="Xuất dạnh sách hiện tại ra định dạng CSV"
+              id="export-csv-btn"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Xuất CSV</span>
+            </button>
+            <button 
+              onClick={handleResetChecklist}
+              className="flex items-center gap-2 px-3 py-1.5 bg-stone-50 hover:bg-stone-100 border border-stone-200 hover:border-stone-300 text-stone-700 hover:text-stone-900 rounded-lg text-xs font-semibold cursor-pointer transition-colors shadow-sm animate-fade-in animate-duration-150"
+              id="reset-checklist-btn"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Đặt lại tất cả</span>
+            </button>
+          </div>
         </div>
 
         {/* Real-time score display */}

@@ -15,10 +15,12 @@ import DealCalculator from "./components/DealCalculator";
 import KPITracker from "./components/KPITracker";
 import ProposalMaker from "./components/ProposalMaker";
 import PrintExecutiveReport from "./components/PrintExecutiveReport";
+import B2BGiftingCalculator from "./components/B2BGiftingCalculator";
 import { Sparkles, FileSpreadsheet, ArrowRight, DownloadCloud, Landmark, ShieldCheck } from "lucide-react";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>("overview");
+  const [viewMode, setViewMode] = useState<"tabbed" | "full">("full"); // Defaults to 'full' for continuous easy tracking as requested
   
   // Master states
   const [checklistItems, setChecklistItems] = useState<DueDiligenceItem[]>(DUE_DILIGENCE_DB);
@@ -34,6 +36,20 @@ export default function App() {
   const [cogsPercent, setCogsPercent] = useState<number>(25);
   const [discountPercent, setDiscountPercent] = useState<number>(45);
   const [marketingCost, setMarketingCost] = useState<number>(30000000); // 30m VND
+
+  // Handle active tab change and support smooth scroll in continuous view mode
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    if (viewMode === "full") {
+      const element = document.getElementById(`${tabId}-section`);
+      if (element) {
+        // Leave buffer for sticky header
+        const yOffset = -220; 
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+    }
+  };
 
   // Compute calculated values
   const getRiskWeight = (level: "high" | "medium" | "low") => {
@@ -58,66 +74,208 @@ export default function App() {
       {/* HEADER COMPONENT */}
       <Header 
         activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
+        setActiveTab={handleTabChange} 
         checklistScore={clearanceScore}
         userEmail="anhovan.fu@gmail.com" 
         onPrintClick={() => setShowPrintReport(true)}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-12">
-        {/* Dynamic section injection */}
-        {activeTab === "overview" && (
-          <OverviewSection 
-            dealParams={{
-              activeModel,
-              volume,
-              retailPrice,
-              cogsPercent,
-              discountPercent,
-              marketingCost
-            }}
-          />
-        )}
         
-        {activeTab === "synergy" && <StrategyFitSection />}
-        
-        {activeTab === "due-diligence" && (
-          <DueDiligenceSection 
-            items={checklistItems} 
-            setItems={setChecklistItems} 
-            clearanceScore={clearanceScore} 
-          />
-        )}
-        
-        {activeTab === "timeline" && (
-          <TimelineSection 
-            timeline={timelinePhases} 
-            setTimeline={setTimelinePhases} 
-          />
-        )}
-        
-        {activeTab === "calculator" && (
-          <DealCalculator 
-            activeModel={activeModel}
-            setActiveModel={setActiveModel}
-            volume={volume}
-            setVolume={setVolume}
-            retailPrice={retailPrice}
-            setRetailPrice={setRetailPrice}
-            cogsPercent={cogsPercent}
-            setCogsPercent={setCogsPercent}
-            discountPercent={discountPercent}
-            setDiscountPercent={setDiscountPercent}
-            marketingCost={marketingCost}
-            setMarketingCost={setMarketingCost}
-          />
-        )}
-        
-        {activeTab === "kpis" && (
-          <KPITracker 
-            kpis={kpiTargets} 
-            setKpis={setKpiTargets} 
-          />
+        {/* VIEW MODE SELECTOR CONTROLLER BAR */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white border border-stone-200 rounded-xl p-4 shadow-sm" id="view-mode-selector-bar">
+          <div className="text-center sm:text-left space-y-0.5">
+            <h4 className="text-xs font-mono font-bold text-amber-700 uppercase tracking-wider">
+              Bố Cục Trải Nghiệm Thẩm Định (Evaluator Viewport Layout)
+            </h4>
+            <p className="text-[11px] text-stone-500 font-medium font-sans">
+              Chuyển đổi giữa chế độ từng Tab riêng lẻ hoặc Trải toàn bộ nội dung liền mạch để tiện theo dõi.
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-1.5 bg-stone-100 border border-stone-200 p-1 rounded-lg">
+            <button
+              onClick={() => setViewMode("tabbed")}
+              className={`px-3 py-1.5 text-xs font-bold rounded transition-all cursor-pointer select-none ${
+                viewMode === "tabbed"
+                  ? "bg-amber-500 text-white shadow-sm"
+                  : "text-stone-500 hover:text-stone-800 hover:bg-stone-50"
+              }`}
+            >
+              📂 Chế Độ Từng Tab
+            </button>
+            <button
+              onClick={() => setViewMode("full")}
+              className={`px-3 py-1.5 text-xs font-bold rounded transition-all cursor-pointer select-none ${
+                viewMode === "full"
+                  ? "bg-amber-500 text-white shadow-sm"
+                  : "text-stone-500 hover:text-stone-800 hover:bg-stone-50"
+              }`}
+            >
+              📜 Trải Toàn Bộ (Full Page)
+            </button>
+          </div>
+        </div>
+
+        {/* Dynamic section injection or rendering of all sections in stacked layout */}
+        {viewMode === "tabbed" ? (
+          <div className="space-y-6">
+            {activeTab === "overview" && (
+              <OverviewSection 
+                dealParams={{
+                  activeModel,
+                  volume,
+                  retailPrice,
+                  cogsPercent,
+                  discountPercent,
+                  marketingCost
+                }}
+              />
+            )}
+            
+            {activeTab === "synergy" && <StrategyFitSection />}
+            
+            {activeTab === "due-diligence" && (
+              <DueDiligenceSection 
+                items={checklistItems} 
+                setItems={setChecklistItems} 
+                clearanceScore={clearanceScore} 
+              />
+            )}
+            
+            {activeTab === "timeline" && (
+              <TimelineSection 
+                timeline={timelinePhases} 
+                setTimeline={setTimelinePhases} 
+              />
+            )}
+            
+            {activeTab === "calculator" && (
+              <DealCalculator 
+                activeModel={activeModel}
+                setActiveModel={setActiveModel}
+                volume={volume}
+                setVolume={setVolume}
+                retailPrice={retailPrice}
+                setRetailPrice={setRetailPrice}
+                cogsPercent={cogsPercent}
+                setCogsPercent={setCogsPercent}
+                discountPercent={discountPercent}
+                setDiscountPercent={setDiscountPercent}
+                marketingCost={marketingCost}
+                setMarketingCost={setMarketingCost}
+              />
+            )}
+
+            {activeTab === "b2b-gifting" && (
+              <B2BGiftingCalculator />
+            )}
+            
+            {activeTab === "kpis" && (
+              <KPITracker 
+                kpis={kpiTargets} 
+                setKpis={setKpiTargets} 
+              />
+            )}
+          </div>
+        ) : (
+          /* CONTINUOUS UNIFIED MAIN LAYOUT */
+          <div className="space-y-16">
+            {/* Overview & SWOT section */}
+            <div id="overview-section" className="space-y-4 pt-4 border-t border-stone-200/40">
+              <div className="flex items-center gap-2 pb-2">
+                <span className="text-[10px] bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-mono font-bold text-amber-700">PHẦN 1</span>
+                <span className="text-xs text-stone-500 font-sans uppercase tracking-widest font-bold">Tổng Quan & Phân Tích SWOT Hoạt Động</span>
+              </div>
+              <OverviewSection 
+                dealParams={{
+                  activeModel,
+                  volume,
+                  retailPrice,
+                  cogsPercent,
+                  discountPercent,
+                  marketingCost
+                }}
+              />
+            </div>
+
+            {/* Strategic fit alignment section */}
+            <div id="synergy-section" className="space-y-4 pt-10 border-t border-stone-200">
+              <div className="flex items-center gap-2 pb-2">
+                <span className="text-[10px] bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-mono font-bold text-amber-700">PHẦN 2</span>
+                <span className="text-xs text-stone-500 font-sans uppercase tracking-widest font-bold">Trục Liên Kết Cộng Hưởng (Strategic Synergy)</span>
+              </div>
+              <StrategyFitSection />
+            </div>
+
+            {/* Due diligence item checks section */}
+            <div id="due-diligence-section" className="space-y-4 pt-10 border-t border-stone-200">
+              <div className="flex items-center gap-2 pb-2">
+                <span className="text-[10px] bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-mono font-bold text-amber-700">PHẦN 3</span>
+                <span className="text-xs text-stone-500 font-sans uppercase tracking-widest font-bold">Thẩm Định & Rủi Ro Pháp Lý (Due Diligence Checklist)</span>
+              </div>
+              <DueDiligenceSection 
+                items={checklistItems} 
+                setItems={setChecklistItems} 
+                clearanceScore={clearanceScore} 
+              />
+            </div>
+
+            {/* Timeline phase and implementation section */}
+            <div id="timeline-section" className="space-y-4 pt-10 border-t border-stone-200">
+              <div className="flex items-center gap-2 pb-2">
+                <span className="text-[10px] bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-mono font-bold text-amber-700">PHẦN 4</span>
+                <span className="text-xs text-stone-500 font-sans uppercase tracking-widest font-bold">Kế Hoạch Tác Chiến 90 Ngày Giai Đoạn Pilot</span>
+              </div>
+              <TimelineSection 
+                timeline={timelinePhases} 
+                setTimeline={setTimelinePhases} 
+              />
+            </div>
+
+            {/* Deal modeling and simulation calculator section */}
+            <div id="calculator-section" className="space-y-4 pt-10 border-t border-stone-200">
+              <div className="flex items-center gap-2 pb-2">
+                <span className="text-[10px] bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-mono font-bold text-amber-700">PHẦN 5</span>
+                <span className="text-xs text-stone-500 font-sans uppercase tracking-widest font-bold">Bộ Mô Phỏng Lợi Nhuận Gộp (Financial Deal Modeling)</span>
+              </div>
+              <DealCalculator 
+                activeModel={activeModel}
+                setActiveModel={setActiveModel}
+                volume={volume}
+                setVolume={setVolume}
+                retailPrice={retailPrice}
+                setRetailPrice={setRetailPrice}
+                cogsPercent={cogsPercent}
+                setCogsPercent={setCogsPercent}
+                discountPercent={discountPercent}
+                setDiscountPercent={setDiscountPercent}
+                marketingCost={marketingCost}
+                setMarketingCost={setMarketingCost}
+              />
+            </div>
+
+            {/* Corporate gifting model section added dynamically */}
+            <div id="b2b-gifting-section" className="space-y-4 pt-10 border-t border-stone-200">
+              <div className="flex items-center gap-2 pb-2">
+                <span className="text-[10px] bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-mono font-bold text-amber-700">PHẦN 6</span>
+                <span className="text-xs text-stone-500 font-sans uppercase tracking-widest font-bold">Dự Phóng Hợp Tác B2B & Quà Tặng Doanh Nghiệp VIP</span>
+              </div>
+              <B2BGiftingCalculator />
+            </div>
+
+            {/* KPI benchmarking target section */}
+            <div id="kpis-section" className="space-y-4 pt-10 border-t border-stone-200">
+              <div className="flex items-center gap-2 pb-2">
+                <span className="text-[10px] bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-mono font-bold text-amber-700">PHẦN 7</span>
+                <span className="text-xs text-stone-500 font-sans uppercase tracking-widest font-bold">Bảng Chỉ Số Đóng Gói Doanh Hóa & KPIs Trọng Tâm</span>
+              </div>
+              <KPITracker 
+                kpis={kpiTargets} 
+                setKpis={setKpiTargets} 
+              />
+            </div>
+          </div>
         )}
 
         {/* BOTTOM FIXED EXECUTIVE PROPOSAL CENTER */}
