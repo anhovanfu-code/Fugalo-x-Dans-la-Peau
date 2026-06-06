@@ -34,7 +34,7 @@ export interface DealSimulatorState {
   productionCost: number; // For wholesale/capsule
   marketingShareFugalo: number; // Percent of marketing paid by Fugalo
   marketingShareDLP: number; // Percent of marketing paid by DLP
-  revenueSharePercent: number; // Fugalo's share (e.g. 15% - 30%)
+  revenueSharePercent: number; // Fugalo's share (e.g. 25% - 35%)
   wholesalePricePercent: number; // DLP wholesale discount to Fugalo (e.g. 50% of retail)
 }
 

@@ -121,7 +121,7 @@ export default function DealCalculator({
           <button 
             onClick={() => {
               setActiveModel("revshare");
-              setDiscountPercent(25); // Default commission 25%
+              setDiscountPercent(30); // Default commission 30% (in the 25% - 35% range)
             }}
             className={`p-4 rounded-lg border text-left cursor-pointer transition-all duration-200 ${
               activeModel === "revshare"
@@ -134,7 +134,7 @@ export default function DealCalculator({
               <Percent className={`w-4 h-4 ${activeModel === "revshare" ? "text-amber-600" : "text-stone-400"}`} />
             </div>
             <p className="text-xs mt-1.5 text-stone-605 font-sans leading-relaxed font-semibold">
-              Fugalo bán sản phẩm DLP cho khách của mình, nhận chiết khấu/hoa hồng 15%–30% tùy biên lợi nhuận. Thích hợp cho sản phẩm lẻ sẵn có.
+              Fugalo bán sản phẩm DLP cho khách của mình, nhận chiết khấu/hoa hồng 25%–35% tùy biên lợi nhuận. Thích hợp cho sản phẩm lẻ sẵn có.
             </p>
           </button>
 

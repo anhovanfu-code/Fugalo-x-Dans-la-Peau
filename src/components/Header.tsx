@@ -4,7 +4,7 @@
  */
 
 import React from "react";
-import { ShieldCheck, Compass, Briefcase, Ruler, BarChart3, HelpCircle, Printer, Gift } from "lucide-react";
+import { ShieldCheck, Compass, Briefcase, Ruler, BarChart3, HelpCircle, Printer, Gift, Layout, Layers } from "lucide-react";
 import { FugaloSeal } from "./FugaloLogo";
 
 interface HeaderProps {
@@ -13,6 +13,8 @@ interface HeaderProps {
   userEmail?: string;
   checklistScore: number;
   onPrintClick?: () => void;
+  viewMode?: "tabbed" | "full";
+  setViewMode?: (mode: "tabbed" | "full") => void;
 }
 
 export default function Header({ 
@@ -20,7 +22,9 @@ export default function Header({
   setActiveTab, 
   userEmail = "anhovan.fu@gmail.com", 
   checklistScore,
-  onPrintClick
+  onPrintClick,
+  viewMode,
+  setViewMode
 }: HeaderProps) {
   const navItems = [
     { id: "overview", label: "Tổng Quan & SWOT", icon: Compass },
@@ -69,22 +73,53 @@ export default function Header({
         {/* User context info */}
         <div className="flex flex-wrap items-center gap-2 sm:gap-4 ml-auto md:ml-0 self-end md:self-auto font-sans">
           <div className="text-right">
-            <div className="text-[10px] text-stone-500 font-medium">Tài khoản thẩm định</div>
+            <div className="text-[10px] text-stone-500 font-medium flex items-center justify-end gap-1.5">
+              <span>Tài khoản thẩm định</span>
+              <span className="relative flex h-1.5 w-1.5" title="Hệ thống dữ liệu sẵn sàng">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+              </span>
+            </div>
             <div className="text-xs font-semibold text-stone-850">{userEmail}</div>
           </div>
           <div className="h-8 w-[1px] bg-stone-200 hidden sm:block" />
+          
+          {/* Elegant layout switcher directly in the right corner header */}
+          {viewMode && setViewMode && (
+            <div className="flex items-center bg-stone-100 hover:bg-stone-200/50 border border-stone-200/80 p-0.5 rounded-lg select-none shrink-0" title="Đổi giao diện bố cục">
+              <button
+                onClick={() => setViewMode("tabbed")}
+                className={`p-1.5 rounded-md transition-all cursor-pointer ${
+                  viewMode === "tabbed"
+                    ? "bg-amber-600 text-white shadow-sm"
+                    : "text-stone-500 hover:text-stone-900 hover:bg-white/85"
+                }`}
+                title="Bố cục: Click Từng Tab"
+              >
+                <Layout className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setViewMode("full")}
+                className={`p-1.5 rounded-md transition-all cursor-pointer ${
+                  viewMode === "full"
+                    ? "bg-amber-600 text-white shadow-sm"
+                    : "text-stone-500 hover:text-stone-900 hover:bg-white/85"
+                }`}
+                title="Bố cục: Trải toàn bộ liền mạch"
+              >
+                <Layers className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
           <button
             onClick={onPrintClick}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-450 text-white font-bold rounded-lg text-xs cursor-pointer select-none border border-amber-600/30 transition-all hover:scale-[1.02] shadow"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-450 text-white font-bold rounded-lg text-xs cursor-pointer border border-amber-600/20 shadow-sm transition-all hover:scale-[1.02]"
             id="header-export-pdf-btn"
           >
             <Printer className="w-3.5 h-3.5 text-white" />
             <span>Xuất Báo Cáo VIP</span>
           </button>
-          <div className="bg-stone-50 border border-stone-200 px-3 py-1.5 rounded-lg flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <div className="text-xs font-mono text-stone-600">Dữ liệu sẵn sàng</div>
-          </div>
         </div>
       </div>
 

@@ -78,45 +78,12 @@ export default function App() {
         checklistScore={clearanceScore}
         userEmail="anhovan.fu@gmail.com" 
         onPrintClick={() => setShowPrintReport(true)}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-12">
         
-        {/* VIEW MODE SELECTOR CONTROLLER BAR */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white border border-stone-200 rounded-xl p-4 shadow-sm" id="view-mode-selector-bar">
-          <div className="text-center sm:text-left space-y-0.5">
-            <h4 className="text-xs font-mono font-bold text-amber-700 uppercase tracking-wider">
-              Bố Cục Trải Nghiệm Thẩm Định (Evaluator Viewport Layout)
-            </h4>
-            <p className="text-[11px] text-stone-500 font-medium font-sans">
-              Chuyển đổi giữa chế độ từng Tab riêng lẻ hoặc Trải toàn bộ nội dung liền mạch để tiện theo dõi.
-            </p>
-          </div>
-          
-          <div className="flex items-center gap-1.5 bg-stone-100 border border-stone-200 p-1 rounded-lg">
-            <button
-              onClick={() => setViewMode("tabbed")}
-              className={`px-3 py-1.5 text-xs font-bold rounded transition-all cursor-pointer select-none ${
-                viewMode === "tabbed"
-                  ? "bg-amber-500 text-white shadow-sm"
-                  : "text-stone-500 hover:text-stone-800 hover:bg-stone-50"
-              }`}
-            >
-              📂 Chế Độ Từng Tab
-            </button>
-            <button
-              onClick={() => setViewMode("full")}
-              className={`px-3 py-1.5 text-xs font-bold rounded transition-all cursor-pointer select-none ${
-                viewMode === "full"
-                  ? "bg-amber-500 text-white shadow-sm"
-                  : "text-stone-500 hover:text-stone-800 hover:bg-stone-50"
-              }`}
-            >
-              📜 Trải Toàn Bộ (Full Page)
-            </button>
-          </div>
-        </div>
-
         {/* Dynamic section injection or rendering of all sections in stacked layout */}
         {viewMode === "tabbed" ? (
           <div className="space-y-6">
