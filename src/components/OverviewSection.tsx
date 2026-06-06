@@ -558,10 +558,10 @@ export default function OverviewSection({ dealParams }: OverviewSectionProps = {
           {
             id: "cit-01",
             title: "MST & Tư Cách Pháp Lý Fugalo Co., Ltd",
-            agency: "Sở KH&ĐT Tỉnh Bình Dương",
+            agency: "Sở KH&ĐT TP. Hồ Chí Minh",
             category: "Pháp Lý Hành Chính",
             source: "Cổng thông tin quốc gia về đăng ký doanh nghiệp & Mã Số Thuế Portal",
-            evidence: "Mã số thuế doanh nghiệp Đăng ký kinh doanh chính danh: 3703215910 - Cấp ngày 14/06/2024 tại Dĩ An, Bình Dương.",
+            evidence: "Mã số thuế doanh nghiệp Đăng ký kinh doanh chính danh: 3703215910 - Cấp ngày 14/06/2024 tại TP. Hồ Chí Minh.",
             notes: "Doanh nghiệp hoạt động đúng chuyên ngành 'Bán lẻ hàng hóa đã qua sử dụng, kiểm định và chăm sóc hàng hiệu' (Circular Economy). Tư cách pháp nhân hợp pháp tuyệt đối, người đại diện đầy đủ thẩm quyền.",
             confidence: "100% Chính chủ",
             docRef: "MST-3703215910-BD",

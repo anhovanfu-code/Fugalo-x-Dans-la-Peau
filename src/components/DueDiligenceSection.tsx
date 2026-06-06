@@ -12,6 +12,9 @@ import {
   FolderOpen, Briefcase, Coins, ShieldCheck, Info, ChevronRight, Check, ShieldAlert,
   Download
 } from "lucide-react";
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
+} from "recharts";
 
 interface DueDiligenceSectionProps {
   items: DueDiligenceItem[];
@@ -163,6 +166,44 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
   };
 
   const selectedFolder = DATA_ROOM_FOLDERS.find(f => f.id === selectedFolderId) || DATA_ROOM_FOLDERS[0];
+
+  // Preparing risk database metrics for the Recharts chart
+  const categoriesList: Array<"legal" | "financial" | "production" | "brand" | "ip"> = ["legal", "financial", "production", "brand", "ip"];
+  const riskChartData = categoriesList.map(cat => {
+    const catItems = items.filter(item => item.category === cat);
+    const highCount = catItems.filter(item => item.riskLevel === "high").length;
+    const mediumCount = catItems.filter(item => item.riskLevel === "medium").length;
+    const lowCount = catItems.filter(item => item.riskLevel === "low").length;
+    
+    return {
+      category: getCategoryVietnameseLabel(cat),
+      "Rủi ro Cao": highCount,
+      "Rủi ro Vừa": mediumCount,
+      "Rủi ro Thấp": lowCount,
+    };
+  });
+
+  const CustomRiskTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-white border border-stone-200 p-2 text-[11px] rounded-lg shadow-md font-sans">
+          <p className="font-bold text-stone-900 mb-1 border-b border-stone-100 pb-1">{label}</p>
+          <div className="space-y-1">
+            {payload.map((entry: any, index: number) => (
+              <div key={index} className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-1 font-semibold text-stone-500">
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+                  <span>{entry.name}:</span>
+                </div>
+                <span className="font-bold text-stone-900">{entry.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="space-y-8 animate-fade-in" id="due-diligence-section">
@@ -366,7 +407,62 @@ export default function DueDiligenceSection({ items, setItems, clearanceScore }:
 
       {subTab === "checklist" ? (
         /* ORIGINAL CHECKLISTS VIEW */
-        <div className="space-y-4">
+        <div className="space-y-5 animate-fade-in">
+          
+          {/* RISK BREAKDOWN RECHARTS WIDGET */}
+          <div className="bg-white border border-stone-200 rounded-xl p-5 shadow-sm" id="risk-levels-comparison-chart">
+            <div className="border-b border-stone-100 pb-3 mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+              <div>
+                <h4 className="text-sm font-bold font-serif text-stone-900 flex items-center gap-1.5">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 animate-pulse" />
+                  <span>Biểu Đồ So Sánh Mức Độ Rủi Ro Giữa Các Trục Thẩm Định</span>
+                </h4>
+                <p className="text-[10px] text-stone-500 font-semibold font-sans mt-0.5">
+                  Phân phối số lượng rủi ro (Cao, Vừa, Thấp) để khoanh vùng ưu tiên kiểm toán.
+                </p>
+              </div>
+              <span className="text-[10px] uppercase font-mono text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-extrabold">
+                Thống Kê Trực Quan
+              </span>
+            </div>
+
+            <div className="h-[260px] w-full font-sans text-xs">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={riskChartData}
+                  margin={{ top: 10, right: 10, left: -25, bottom: 0 }}
+                  barSize={16}
+                  barGap={4}
+                >
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f4" />
+                  <XAxis 
+                    dataKey="category" 
+                    tick={{ fill: '#78716c', fontSize: 10, fontWeight: 600 }}
+                    axisLine={{ stroke: '#e7e5e4' }} 
+                    tickLine={{ stroke: '#e7e5e4' }} 
+                  />
+                  <YAxis 
+                    tick={{ fill: '#78716c', fontSize: 10, fontWeight: 600 }}
+                    axisLine={{ stroke: '#e7e5e4' }} 
+                    tickLine={{ stroke: '#e7e5e4' }}
+                    allowDecimals={false}
+                  />
+                  <Tooltip content={<CustomRiskTooltip />} cursor={{ fill: '#fafaf9', opacity: 0.5 }} />
+                  <Legend 
+                    verticalAlign="top" 
+                    height={36} 
+                    iconType="circle"
+                    iconSize={8}
+                    wrapperStyle={{ fontSize: 10, fontWeight: 600, paddingBottom: 12 }}
+                  />
+                  <Bar dataKey="Rủi ro Cao" name="Rủi ro Cao" fill="#f43f5e" radius={[2, 2, 0, 0]} />
+                  <Bar dataKey="Rủi ro Vừa" name="Rủi ro Vừa" fill="#f59e0b" radius={[2, 2, 0, 0]} />
+                  <Bar dataKey="Rủi ro Thấp" name="Rủi ro Thấp" fill="#a8a29e" radius={[2, 2, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 border border-stone-200 rounded-lg shadow-sm">
             <div className="flex items-center gap-2 text-stone-600 text-xs font-semibold">
               <Filter className="w-4 h-4 text-amber-600" />

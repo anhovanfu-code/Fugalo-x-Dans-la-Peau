@@ -602,7 +602,7 @@ export default function PrintExecutiveReport({
                       O - Cơ Hội (Opportunities)
                     </h3>
                     <ul className="list-disc pl-4 space-y-1 text-stone-600 leading-relaxed">
-                      <li>Nhúng thẳng dịch vụ phụ trợ da hạt tại chuỗi Showroom VIP của Fugalo (Dĩ An, Bình Dương).</li>
+                      <li>Nhúng thẳng dịch vụ phụ trợ da hạt tại chuỗi Showroom VIP của Fugalo (TP. Hồ Chí Minh).</li>
                       <li>Gói dịch vụ Spa Refresh tái tạo hàng hiệu, thu hút tệp khách hàng mua túi hiệu cũ.</li>
                       <li>Ra mắt dòng Capsule bền vững "Crafted for Second Life" thân thiện môi trường.</li>
                     </ul>
@@ -634,7 +634,7 @@ export default function PrintExecutiveReport({
                     </div>
                     <div className="p-2.5 border border-stone-200 rounded">
                       <div className="font-bold text-stone-900 mb-1">Trục 2: Showroom</div>
-                      <p className="text-stone-500 leading-tight">Ưu tiên trải nghiệm thực địa 90 ngày tại cơ sở Dĩ An, kiểm nghiệm dòng tiền.</p>
+                      <p className="text-stone-500 leading-tight">Ưu tiên trải nghiệm thực địa 90 ngày tại cơ sở TP. Hồ Chí Minh, kiểm nghiệm dòng tiền.</p>
                     </div>
                     <div className="p-2.5 border border-stone-200 rounded">
                       <div className="font-bold text-stone-900 mb-1">Trục 3: Circular</div>
@@ -1300,7 +1300,7 @@ export default function PrintExecutiveReport({
                   <div className="p-2 bg-stone-50/50 border border-stone-200 rounded">
                     <strong className="text-stone-900 block text-[8.5px] border-b border-stone-150 pb-0.5 mb-1 text-amber-600">TUẦN 10 - 13: GO-LIVE</strong>
                     <ul className="list-disc pl-3 text-stone-600 space-y-0.5 text-[7.5px]">
-                      <li>Bày VIP showroom Dĩ An.</li>
+                      <li>Bày VIP showroom TP. HCM.</li>
                       <li>Launch Capsule trực tuyến.</li>
                       <li>Hạch toán doanh số.</li>
                       <li>Biên bản M&A sáp nhập.</li>
@@ -1409,7 +1409,7 @@ export default function PrintExecutiveReport({
                     <div>
                       <strong className="text-stone-900 block">ĐIỀU 2: ĐẦU TƯ THỰC ĐỊA & PILOT CHUẨN MỰC</strong>
                       <p className="text-stone-600">
-                        Kỳ hạn Thử nghiệm 90 ngày. Fugalo cung ứng gian hàng trung tâm tại Dĩ An. Dans la Peau cung ứng 4 phân nhóm sản phẩm thiết thực và số tay thợ lành nghề để biểu diễn thủ công tại Showroom nhằm thúc đẩy quảng cáo diện rộng.
+                        Kỳ hạn Thử nghiệm 90 ngày. Fugalo cung ứng gian hàng trung tâm tại TP. Hồ Chí Minh. Dans la Peau cung ứng 4 phân nhóm sản phẩm thiết thực và số tay thợ lành nghề để biểu diễn thủ công tại Showroom nhằm thúc đẩy quảng cáo diện rộng.
                       </p>
                     </div>
 

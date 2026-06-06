@@ -60,7 +60,7 @@ export default function Header({
               </span>
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500/20 hidden sm:inline" />
               <span className="text-stone-500 font-sans not-italic text-[10px] sm:text-[11px] font-normal">
-                Nền tảng kiểm định sáp nhập, chuỗi cung ứng và hoạch định chuỗi Dĩ An
+                Nền tảng kiểm định sáp nhập, chuỗi cung ứng và hoạch định chuỗi TP. Hồ Chí Minh
               </span>
             </p>
           </div>

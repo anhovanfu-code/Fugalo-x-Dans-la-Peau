@@ -39,7 +39,7 @@ Fugalo đề xuất KHÔNG bước vào ngay với tư cách đồng sáng lập
 "Fugalo x Dans la Peau – Luxury Leather Care, Bespoke & Circular Craft".
 
 2. LỘ TRÌNH 4 GIAI ĐOẠN KHÔNG RỦI RO:
-- Giao đoạn 1 (Ngày 1 - 90): Ký kết MOU thử nghiệm thương mại dài hạn 90 ngày tại showroom Fugalo (Dĩ An, Bình Dương). Test 4 nhóm sản phẩm: Watch straps, Hộp đồng hồ da, Khay đa năng, và gói Spa Refresh.
+- Giao đoạn 1 (Ngày 1 - 90): Ký kết MOU thử nghiệm thương mại dài hạn 90 ngày tại showroom Fugalo (TP. Hồ Chí Minh). Test 4 nhóm sản phẩm: Watch straps, Hộp đồng hồ da, Khay đa năng, và gói Spa Refresh.
 - Giai đoạn 2 (Tháng 4 - 5): Ra mắt bộ sưu tập capsule "Fugalo x Dans la Peau" với concept bền vững "Crafted for the Second Life of Luxury".
 - Giai đoạn 3 (Tháng 6 - 9): Nhận quyền đại lý phân phối độc quyền có điều kiện liên quan đến dòng capsule, cam kết doanh thu tối thiểu mỗi quý.
 - Giai đoạn 4 (Tháng 10 trở đi): Đàm phán thành lập công ty liên doanh độc lập hoặc mua 20% - 35% cổ phần chiến lược của Dans la Peau sau khi hoàn thiện kiểm toán.

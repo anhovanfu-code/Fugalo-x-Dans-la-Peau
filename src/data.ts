@@ -12,7 +12,7 @@ export const BRAND_PROFILES = {
   fugalo: {
     name: "Fugalo Co., Ltd",
     established: "June 2024 (MST: 3703215910)",
-    showroom: "Dĩ An, Bình Dương",
+    showroom: "TP. Hồ Chí Minh",
     positioning: "Luxury Resale, Consignment & Authentication Hub",
     coreStrengths: [
       "Sở hữu tệp khách hàng VIP / High-net-worth individuals chuộng hàng hiệu",
