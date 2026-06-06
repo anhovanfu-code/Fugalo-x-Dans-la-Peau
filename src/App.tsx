@@ -20,7 +20,7 @@ import { Sparkles, FileSpreadsheet, ArrowRight, DownloadCloud, Landmark, ShieldC
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>("overview");
-  const [viewMode, setViewMode] = useState<"tabbed" | "full">("full"); // Defaults to 'full' for continuous easy tracking as requested
+  const [viewMode, setViewMode] = useState<"tabbed" | "full">("tabbed"); // Defaults to 'tabbed' for an elegant, compact and professional app interface
   
   // Master states
   const [checklistItems, setChecklistItems] = useState<DueDiligenceItem[]>(DUE_DILIGENCE_DB);

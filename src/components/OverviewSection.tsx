@@ -283,8 +283,8 @@ export default function OverviewSection({ dealParams }: OverviewSectionProps = {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs font-sans tracking-tight border-collapse">
+        <div className="overflow-x-auto w-full no-scrollbar rounded-lg border border-stone-200">
+          <table className="w-full min-w-[720px] text-left text-xs font-sans tracking-tight border-collapse table-fixed">
             <thead>
               <tr className="bg-stone-50 border-b border-stone-200">
                 <th className="py-3 px-4 font-extrabold text-stone-600 uppercase font-mono tracking-wider w-[22%]">Tiêu chuẩn so sánh</th>

@@ -41,47 +41,71 @@ export default function Header({
       {/* Decorative luxury terracotta brand line */}
       <div className="h-[3px] bg-gradient-to-r from-amber-800 via-amber-500 to-amber-600 w-full" />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 md:py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-1.5 md:gap-4">
         {/* Logos & Branding styled precisely from the official uploaded logo */}
         <div className="flex items-center justify-between md:justify-start gap-3 w-full md:w-auto">
-          <div className="flex items-center gap-2.5 sm:gap-4">
-            <FugaloSeal size={40} className="shadow-md hover:scale-105 duration-300 transition-all cursor-pointer shrink-0 md:w-13 md:h-13" />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <FugaloSeal size={32} className="shadow-md hover:scale-105 duration-300 transition-all cursor-pointer shrink-0 md:w-11 md:h-11" />
             
             <div>
-              <div className="flex flex-wrap items-baseline gap-x-1.5 sm:gap-x-2.5 gap-y-0.5">
-                <h1 className="text-base sm:text-xl font-serif font-semibold text-stone-900 tracking-wide flex items-center gap-1">
-                  <span className="tracking-[0.12em] sm:tracking-[0.18em] font-serif font-extrabold text-[#db5129] uppercase">FUGALO</span> 
-                  <span className="text-amber-500 font-sans text-[10px] sm:text-xs select-none">×</span> 
-                  <span className="text-stone-700 font-serif font-light text-sm sm:text-base tracking-wider">Dans la Peau</span>
+              <div className="flex flex-wrap items-baseline gap-x-1.5 sm:gap-x-2 gap-y-0.5">
+                <h1 className="text-xs sm:text-lg font-serif font-semibold text-stone-900 tracking-wide flex items-center gap-0.5">
+                  <span className="tracking-[0.1em] sm:tracking-[0.18em] font-serif font-extrabold text-[#db5129] uppercase text-[11px] sm:text-base">FUGALO</span> 
+                  <span className="text-amber-500 font-sans text-[8px] sm:text-xs select-none">×</span> 
+                  <span className="text-stone-700 font-serif font-light text-[11px] sm:text-base tracking-wider">Dans la Peau</span>
                 </h1>
-                <span className="inline-block px-1 py-0.5 sm:px-1.5 sm:py-0.5 bg-amber-50 text-amber-700 text-[7px] sm:text-[8px] uppercase tracking-widest font-mono border border-amber-200/50 rounded font-bold">
-                  M&A PRO
+                <span className="inline-block px-1 py-0.2 sm:px-1.5 sm:py-0.5 bg-amber-50 text-amber-700 text-[6px] sm:text-[8px] uppercase tracking-widest font-mono border border-amber-200/50 rounded font-bold">
+                  M&A
                 </span>
               </div>
-              <p className="text-stone-600 font-serif italic tracking-wider mt-0.5 flex flex-wrap items-center gap-1.5 text-[9px] sm:text-xs">
-                <span className="text-[#db5129] font-serif not-italic tracking-[0.2em] sm:tracking-[0.3em] font-extrabold text-[8px] sm:text-[10px] pr-1">
+              <p className="text-stone-600 font-serif italic tracking-wider mt-0.5 flex flex-wrap items-center gap-1 text-[8px] sm:text-xs">
+                <span className="text-[#db5129] font-serif not-italic tracking-[0.15em] sm:tracking-[0.25em] font-extrabold text-[7.5px] sm:text-[9px] pr-1">
                   TÁI SINH GIÁ TRỊ
                 </span>
-                <span className="w-1 h-1 rounded-full bg-amber-500/20 hidden sm:inline" />
-                <span className="text-stone-500 font-sans not-italic text-[9px] sm:text-[11px] font-normal hidden md:inline">
+                <span className="w-1 h-1 rounded-full bg-amber-500/10 hidden sm:inline" />
+                <span className="text-stone-500 font-sans not-italic text-[8.5px] sm:text-[11px] font-normal hidden md:inline">
                   Nền tảng kiểm định sáp nhập, chuỗi cung ứng và hoạch định chuỗi TP. Hồ Chí Minh
                 </span>
               </p>
             </div>
           </div>
 
-          {/* Quick status dot & print button on mobile top row */}
-          <div className="flex items-center gap-2 md:hidden">
-            <span className="relative flex h-2 w-2" title="Hệ thống dữ liệu sẵn sàng">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
+          {/* Quick status dot, layout toggle & print button on mobile top row */}
+          <div className="flex items-center gap-1.5 md:hidden">
+            {/* Elegant layout switcher for mobile view */}
+            {viewMode && setViewMode && (
+              <div className="flex items-center bg-stone-100/95 border border-stone-200/60 p-0.5 rounded-md select-none shrink-0" title="Đổi giao diện bố cục">
+                <button
+                  onClick={() => setViewMode("tabbed")}
+                  className={`p-1 rounded-sm transition-all cursor-pointer ${
+                    viewMode === "tabbed"
+                      ? "bg-amber-600 text-white shadow-xs"
+                      : "text-stone-500 active:bg-white"
+                  }`}
+                  title="Giao diện App: Xem từng Tab gọn gàng"
+                >
+                  <Layout className="w-3 h-3" />
+                </button>
+                <button
+                  onClick={() => setViewMode("full")}
+                  className={`p-1 rounded-sm transition-all cursor-pointer ${
+                    viewMode === "full"
+                      ? "bg-amber-600 text-white shadow-xs"
+                      : "text-stone-500 active:bg-white"
+                  }`}
+                  title="Giao diện Cuộn: Xem tràn trang"
+                >
+                  <Layers className="w-3 h-3" />
+                </button>
+              </div>
+            )}
+
             <button
               onClick={onPrintClick}
-              className="p-2 bg-amber-600 active:bg-amber-700 text-white rounded-lg shadow-sm"
+              className="p-1 px-1.5 bg-amber-600 active:bg-amber-700 text-white rounded shadow-xs"
               title="Xuất Báo Cáo VIP"
             >
-              <Printer className="w-4 h-4" />
+              <Printer className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>

@@ -577,8 +577,8 @@ export default function B2BGiftingCalculator() {
             {/* SELECTION DETAILS BREAKDOWN TABLE */}
             <div className="space-y-3 pt-4 border-t border-stone-100">
               <span className="text-xs font-mono text-stone-500 uppercase tracking-widest block font-bold">Bảng đặc tả cấu hình 4 gói quà tặng doanh nghiệp</span>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs font-sans tracking-tight border-collapse">
+              <div className="overflow-x-auto w-full no-scrollbar rounded-lg border border-stone-205">
+                <table className="w-full min-w-[620px] text-left text-xs font-sans tracking-tight border-collapse">
                   <thead>
                     <tr className="bg-stone-50 border-b border-stone-200">
                       <th className="py-2.5 px-3 font-extrabold text-[#78716c] uppercase font-mono tracking-wider text-[10px]">Phân khúc</th>
